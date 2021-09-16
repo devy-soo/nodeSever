@@ -1,0 +1,133 @@
+// 변수
+$font_noto : 'Noto Sans KR', sans-serif;
+
+@mixin clear_fix{
+  content: '';
+  display: block;
+  clear: both;
+}
+@mixin flex_center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+@mixin margin_center($width) {
+  width: $width;
+  margin: auto;
+}
+
+
+
+$gradient1 :  linear-gradient(-45deg, #ff629f, #23a6d5, #23d5ab);
+$gradient2 :  linear-gradient(135deg, #9d8dae 0%, #6659a3 100%);
+$gradient3 :  linear-gradient(135deg, #6659a3 0%, #9d8dae 100%);
+$color1 : #26a3ff;
+$color2 : #6659a3;
+$white : #fff;
+
+
+html{height: 100%}
+
+
+body{
+    background: $gradient1;
+    @include flex_center();
+    text-align: center;
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+    height: 100vh;
+}
+
+@keyframes gradient {
+	0% {background-position: 0% 50%;}
+	50% {background-position: 100% 50%;}
+	100% {background-position: 0% 50%;}
+}
+
+h1{
+  color:rgba(255,255,255,0.3);
+  font-size:1.8rem;
+  margin-bottom:1rem
+}
+
+section{
+    max-width: 700px;
+    @include margin_center(90%);
+
+    >div{margin-bottom:3rem}
+}
+
+.search_box{
+  input[type="text"]{
+    border:2px solid $color2;
+    padding: 0.5rem 1rem;
+    width: calc(100% - 10rem);
+  }
+
+  // @keyframes bg_change {
+  //   from { background: $gradient2;}
+  //   to {background: $gradient3;}
+  // }
+  input[type="button"]{
+    background: $gradient2;
+    border: none;
+    padding: 0.6rem;
+    width: 9rem;
+    color: $white;
+    cursor: pointer;
+    border-radius: 0.8rem;
+    font-size: 1.1rem;
+    &:hover{
+      background: $gradient3;
+    }
+  }
+}
+
+
+.today_icon_wrap{
+  font-size: 12rem;
+  color: $white;
+}
+
+
+.today_weather_wrap{
+  margin-bottom: 2rem;
+  display: flex;
+  color: $white;
+  li:nth-child(1), li:nth-child(2){
+    flex: 1 0 0;
+    >strong{
+      font-size: 4rem;
+      font-weight: 600;
+    }
+    >p{
+        font-size: 1.5rem;
+        margin-top: 1rem;
+    }
+  }
+}
+
+
+.table_like{
+  display: flex;
+  dl{
+    flex: 1 0 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 1rem;
+    margin: 0.3rem;
+    padding: 0.8rem 0.5rem;
+    box-sizing: border-box;
+    color: $color2;
+    dt{
+      font-size: 1.2rem;
+    }
+    i{
+      font-size: 3rem;
+      margin:1rem auto;
+    }
+    dd{
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+  }
+}

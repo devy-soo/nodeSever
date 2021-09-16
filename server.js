@@ -1,19 +1,24 @@
-const http = require("http"); // 노드 모듈을 가져온다
+// node_modules 에 있는 express 관련 파일을 가져온다.
+const express = require('express')
 
-const hostname = "127.0.0.1" // 사용할 서버 호스트네임
-const port = 8080 // 사용할 서버 포트
+// express 는 함수이므로, 반환값을 변수에 저장한다.
+const server = express()
 
-// 서버를 만든다
-const server = http.createServer((req, res) => {
-  // 요청이 오면 실행되는 콜백 함수
-  res.statusCode = 200 // 응답 상태값 설정
-  res.setHeader("Content-Type", "text/plain") // 응답 헤더 중 Content-Type 설정
-  res.end("Hello, World!\n") // 응답 데이터 전송
+// 3000 포트로 서버 오픈
+server.listen(8080, function() {
+    console.log("start! express server on port 3000")
 })
 
-// 서버를 요청 대기 상태로 만든다
-server.listen(port, hostname, () => {
-  // 요청 대기가 완료되면 실행되는 콜백 함수
-  // 터미널에 로그를 기록한다!
-  console.log(`Server running at http://${hostname}:${port}/`)
+
+server.get('/', function(req,res) {
+  res.sendFile(__dirname + "/resources/index.html")
 })
+
+// localhost:3000/main 브라우저에 res.sendFile() 내부의 파일이 띄워진다.
+server.get('/main', function(req,res) {
+  res.sendFile(__dirname + "/resources/index.html")
+})
+
+// public 디렉토리를 static으로 기억한다.
+// public 내부의 파일들을 localhost:3000/파일명 으로 브라우저에서 불러올 수 있다.
+server.use(express.static('resources'))

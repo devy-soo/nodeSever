@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>weather</title>
+    <meta name="description" content="weather">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="icon" href="favicon.ico">
+
+    <link rel="stylesheet" href="css/normalize.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="css/style.min.css">
+
+    <!-- jquery ui  -->
+     <script src="js/jquery-3.5.1.min.js"></script>
+     <script src="js/jquery-ui.min.js"></script>
+
+    <!-- xeicon -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+
+    <!-- swiper   -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper@7/swiper-bundle.min.css"/>
+    <script src="https://unpkg.com/swiper@7/swiper-bundle.min.js"></script>
+</head>
+
+<body>
+
+  <section>
+
+    <h1>오늘 날씨</h1>
+
+
+    <div class="weather_info_wrap">
+
+      <div class="today_icon_wrap">
+        <i class="xi-sun-o"></i>
+      </div>
+
+      <ul class="today_weather_wrap">
+        <li>
+          <strong id="todayCity"></strong>
+          <p id="todayWeather"></p>
+        </li>
+        <li>
+          <strong><span id="todayTem"></span>℃</strong>
+          <p>
+              <span id="todayTemMin"></span>℃ / <span id="todayTemMax"></span>℃
+          </p>
+        </li>
+      </ul>
+
+      <div class="table_like">
+        <dl>
+          <dt id="dayDate0">9/3</dt>
+          <dd>
+            <i class="xi-sun-o" id="dayIcon0"></i>
+            <p>
+                <span id="dayMinTem0">16</span>℃/<span id="dayMaxTem0">28</span>℃
+            </p>
+          </dd>
+        </dl>
+        <dl>
+          <dt id="dayDate1">9/4</dt>
+          <dd>
+            <i class="xi-sun-o" id="dayIcon1"></i>
+            <p>
+                <span id="dayMinTem1">16</span>℃/<span id="dayMaxTem1">28</span>℃
+            </p>
+          </dd>
+        </dl>
+        <dl>
+          <dt id="dayDate2">9/3</dt>
+          <dd>
+            <i class="xi-sun-o" id="dayIcon2"></i>
+            <p>
+                <span id="dayMinTem2">16</span>℃/<span id="dayMaxTem2">28</span>℃
+            </p>
+          </dd>
+        </dl>
+        <dl>
+          <dt id="dayDate3">9/3</dt>
+          <dd>
+            <i class="xi-sun-o" id="dayIcon3"></i>
+            <p>
+                <span id="dayMinTem3">16</span>℃/<span id="dayMaxTem3">28</span>℃
+            </p>
+          </dd>
+        </dl>
+        <dl>
+          <dt id="dayDate4">9/3</dt>
+          <dd>
+            <i class="xi-sun-o" id="dayIcon4"></i>
+            <p>
+                <span id="dayMinTem4">16</span>℃/<span id="dayMaxTem4">28</span>℃
+            </p>
+          </dd>
+        </dl>
+        <dl>
+          <dt id="dayDate5">9/3</dt>
+          <dd>
+            <i class="xi-sun-o" id="dayIcon5"></i>
+            <p>
+                <span id="dayMinTem5">16</span>℃/<span id="dayMaxTem5">28</span>℃
+            </p>
+          </dd>
+        </dl>
+        <dl>
+          <dt id="dayDate6">9/3</dt>
+          <dd>
+            <i class="xi-sun-o" id="dayIcon6"></i>
+            <p>
+                <span id="dayMinTem6">16</span>℃/<span id="dayMaxTem6">28</span>℃
+            </p>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+
+
+
+    <div class="search_box">
+      <input type="text" placeholder="지역 검색" id="address_detail">
+      <input type="text" placeholder="지역 검색" id="address_detail2">
+      <input type="text" placeholder="지역 검색" id="address_detail3">
+      <input type="button" value="지역 변경" id="address_kakao">
+    </div>
+
+
+  </section>
+
+     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <!-- <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script> -->
+    <script src="js/common.js"></script>
+
+</body>
+
+</html>
