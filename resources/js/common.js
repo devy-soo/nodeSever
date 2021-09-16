@@ -245,12 +245,17 @@ let openDate = todayFormet + '0600';
 
 
 
-// 중기 예보 3-7일  (일주일 날씨)
+// 중기 예보 3-7일  (일주일 기온)
 function viewWeekWeather(findCode){
 
 	let selectCodes = findCode[0].code;
 
-    let weekOpenTem = `http://apis.data.go.kr/${selectCodes}/MidFcstInfoService/getMidTa?serviceKey=${openKey}&pageNo=1&numOfRows=10&dataType=json&regId=11B10101&tmFc=${openDate}`;
+    let weekOpenTem = `http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
+
+    // let weekOpenTem = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D
+	//&pageNo=1&numOfRows=10&dataType=json&regId=11B10101&tmFc=202109160600';
+
+	// http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&numOfRows=10&pageNo=1&regId=11D20501&tmFc=202109160600
 
 	console.log(weekOpenTem);
 
@@ -278,3 +283,4 @@ function viewWeekWeather(findCode){
     });
 
 }
+	
