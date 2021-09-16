@@ -9,26 +9,19 @@ app.listen(8080, function() {
 
 
 app.get('/', function(req,res) {
-  res.sendFile(__dirname + "/resources/index.html")
+  res.sendFile(__dirname + "/index.html")
 })
 
-// localhost:8080/main 브라우저에 res.sendFile() 내부의 파일이 띄워진다.
+// localhost:3000/main 브라우저에 res.sendFile() 내부의 파일이 띄워진다.
 app.get('/index', function(req,res) {
-  res.sendFile(__dirname + "/resources/index.html")
+  res.sendFile(__dirname + "/index.html")
 })
 
 // public 디렉토리를 static으로 기억한다.
 // public 내부의 파일들을 localhost:8080/파일명 으로 브라우저에서 불러올 수 있다.
-app.use(express.static('resources/'))
+// app.use(express.static('resources'))
 
 
-
-app.get("/", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*")
-  // 위 두 줄을 추가해주면 CORS 를 허용하게 됩니다.
-
-})
 
 /*
 const cors = require ('cors');
@@ -48,7 +41,6 @@ app.use(function (req, res, next) {
 */
 
 
-
 /*
 const cors = require('cors');
 const router = express.Router();
@@ -57,5 +49,23 @@ router.get('/', cors(), (req, res) => { res.send('cors!') });
 */
 
 
-// const cors = require('cors');
-// app.use(cors());
+
+/*
+module.exports = {
+  devapp: {
+    proxy: {
+      '/api': {
+        target: 'https://api.evan.com',
+        changeOrigin: true,
+        pathRewrite: { '^/api': '' },
+      },
+    }
+  }
+}
+
+*/
+
+
+
+const cors = require('cors');
+app.use(cors());
