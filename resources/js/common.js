@@ -157,8 +157,8 @@ function findRegid(data){
 		let exceptionIndexNum = exception1.indexOf(regDepth1);
 		const exceptionName = ['서울', '인천', '부산', '울산', '대구', '광주', '대전', '세종', '제주'];
 
-    let regName = exceptionName[exceptionIndexNum];
-    convertCode(regName);
+		let regName = exceptionName[exceptionIndexNum];
+		convertCode(regName);
 		
 	}else if(regDepth2){
 
@@ -230,7 +230,7 @@ function convertCode(regionName){
 	let findCode = jsonData.filter(it => it.region.includes(regionName));
 
 	console.log(findCode);
-	console.log(findCode[0].code);
+	// console.log(findCode[0].code);
 
 	viewWeekWeather(findCode);
   
@@ -245,12 +245,13 @@ let openDate = todayFormet + '0600';
 
 
 
+
 // 중기 예보 3-7일  (일주일 기온)
 function viewWeekWeather(findCode){
 
 	let selectCodes = findCode[0].code;
 
-    let weekOpenTem = `http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
+    let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
 
     // let weekOpenTem = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D
 	//&pageNo=1&numOfRows=10&dataType=json&regId=11B10101&tmFc=202109160600';
@@ -261,25 +262,61 @@ function viewWeekWeather(findCode){
 
 
     $.getJSON( weekOpenTem ,function(data){
-        // console.log(data);
+        console.log(data);
+		
+		let weekMaxTem2 = document.getElementById("dayMaxTem2");
+		weekMaxTem2.innerText = parseInt(data.response.body.items.item[0].taMax3);
 
-        for (let i = 3; i < 6; i++) {
-            let weekMaxTem = document.getElementById("dayMaxTem" + i);
-            let weekMinTem = document.getElementById("dayMinTem" + i);
+		let weekMaxTem3 = document.getElementById("dayMaxTem3");
+		weekMaxTem3.innerText = parseInt(data.response.body.items.item[0].taMax4);
 
-            weekMinTem.innerText = parseInt(data.daily[i].temp.min);
-            weekMaxTem.innerText = parseInt(data.daily[i].temp.max);
-        }
+		let weekMaxTem4 = document.getElementById("dayMaxTem4");
+		weekMaxTem4.innerText = parseInt(data.response.body.items.item[0].taMax5);
+
+		let weekMaxTem5 = document.getElementById("dayMaxTem5");
+		weekMaxTem5.innerText = parseInt(data.response.body.items.item[0].taMax6);
+
+		let weekMaxTem6 = document.getElementById("dayMaxTem6");
+		weekMaxTem6.innerText = parseInt(data.response.body.items.item[0].taMax7);
+
+		let weekMinTem2 = document.getElementById("dayMinTem2");
+		weekMinTem2.innerText = parseInt(data.response.body.items.item[0].taMin3);
+
+		let weekMinTem3 = document.getElementById("dayMinTem3");
+		weekMinTem3.innerText = parseInt(data.response.body.items.item[0].taMin4);
+
+		let weekMinTem4 = document.getElementById("dayMinTem4");
+		weekMinTem4.innerText = parseInt(data.response.body.items.item[0].taMin5);
+
+		let weekMinTem5 = document.getElementById("dayMinTem5");
+		weekMinTem5.innerText = parseInt(data.response.body.items.item[0].taMin6);
+
+		let weekMinTem6 = document.getElementById("dayMinTem6");
+		weekMinTem6.innerText = parseInt(data.response.body.items.item[0].taMin7);
+
+
+		
+		let todayCity = document.querySelector('#todayCity');
+		todayCity.innerText = document.getElementById("address_detail3").value;
+		
+
+        // for (let i = 2; i < 6; i++) {
+        //     let weekMaxTem = document.getElementById("dayMaxTem" + i);
+        //     let weekMinTem = document.getElementById("dayMinTem" + i);
+
+        //     weekMinTem.innerText = parseInt(data.daily[i].temp.min);
+        //     weekMaxTem.innerText = parseInt(data.response.body.items.item[0].taMax3);
+        // }
 
         
 
-        let todayTemMin = document.querySelector('#todayTemMin');
-        let openTemMin = parseInt(data.daily[0].temp.min);
-        todayTemMin.innerText = openTemMin;
+        // let todayTemMin = document.querySelector('#todayTemMin');
+        // let openTemMin = parseInt(data.daily[0].temp.min);
+        // todayTemMin.innerText = openTemMin;
 
-        let todayTemMax = document.querySelector('#todayTemMax');
-        let openTemMax = parseInt(data.daily[0].temp.max);
-        todayTemMax.innerText = openTemMax;
+        // let todayTemMax = document.querySelector('#todayTemMax');
+        // let openTemMax = parseInt(data.daily[0].temp.max);
+        // todayTemMax.innerText = openTemMax;
     });
 
 }
