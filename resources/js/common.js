@@ -173,6 +173,8 @@ function findRegid(data){
 
 
 
+
+
 /* ### 검색 ### */
 
 // 주소 api 이용
@@ -229,7 +231,7 @@ function convertCode(regionName){
 
 	let findCode = jsonData.filter(it => it.region.includes(regionName));
 
-	console.log(findCode);
+	// console.log(findCode);
 	// console.log(findCode[0].code);
 
 	viewWeekWeather(findCode);
@@ -239,30 +241,108 @@ function convertCode(regionName){
 
 const openKey = 'lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D';
 
-let today = new Date();
+
+
+const today = new Date();
 let todayFormet = today.toISOString().substring(0,10).replace(/-/g,''); //yyyymmdd
 let openDate = todayFormet + '0600';
 
 
+
+// 일주일 날짜
+for(let i = 0; i < 7; i++){
+	const dayStandard = new Date();
+
+	dayStandard.setDate(today.getDate() + i);
+	let month = ("0" + (1 + dayStandard.getMonth())).slice(-2);
+	let day = ("0" + dayStandard.getDate()).slice(-2);
+
+	let dayDate = document.getElementById("dayDate" + i);
+	dayDate.innerText = month + "/" + day;                          
+}
 
 
 // 중기 예보 3-7일  (일주일 기온)
 function viewWeekWeather(findCode){
 
 	let selectCodes = findCode[0].code;
+	
+	// 2일
+    let day2OpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${selectCodes}`;
 
+    $.getJSON( day2OpenTem ,function(data){
+
+        console.log(data);
+
+		let hours = today.getHours(); 
+
+		// am 5 ~ am 11
+		if( 5 <= hours && hours <= 11 ){
+
+			let weekMinTem1 = document.getElementById("dayMinTem1");
+			weekMinTem1.innerText = parseInt(data.response.body.items.item[3].ta);
+
+			let weekMaxTem1 = document.getElementById("dayMaxTem1");
+			weekMaxTem1.innerText = parseInt(data.response.body.items.item[2].ta);
+		}
+
+		//  pm12 ~ 다음날 am 4
+		if( 5 > hours || hours > 11 ){
+
+			let weekMinTem1 = document.getElementById("dayMinTem1");
+			weekMinTem1.innerText = parseInt(data.response.body.items.item[1].ta);
+
+			let weekMaxTem1 = document.getElementById("dayMaxTem1");
+			weekMaxTem1.innerText = parseInt(data.response.body.items.item[2].ta);
+
+			
+			// 2일 아이콘
+			let dayIcon1 = document.getElementById("dayIcon1");
+			let amDay2Weadter = data.response.body.items.item[1].rnYn;
+			let pmDay2Weadter = data.response.body.items.item[2].rnYn;
+
+			if( amDay2Weadter == 0 && pmDay2Weadter == 0 ){
+				return 0;
+			}else if( amDay2Weadter != 0 && pmDay2Weadter != 0 ){
+				if( amDay2Weadter == pmDay2Weadter){
+					return amDay2Weadter;
+				}else{
+					if(amDay2Weadter == 2 || pmDay2Weadter == 2 || amDay2Weadter == 3 || pmDay2Weadter == 3){
+						return 2;
+					}else{
+						return 1;
+					}
+				}
+			}else{
+				if( amDay2Weadter == 0){
+					return pmDay2Weadter;
+				}else if( pmDay2Weadter == 0 ){
+					return amDay2Weadter;
+				}
+			}
+
+		}
+
+
+
+
+
+
+
+    });
+
+
+
+
+
+	// 3~7일
     let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
 
-    // let weekOpenTem = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D
-	//&pageNo=1&numOfRows=10&dataType=json&regId=11B10101&tmFc=202109160600';
-
-	// http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&numOfRows=10&pageNo=1&regId=11D20501&tmFc=202109160600
-
-	console.log(weekOpenTem);
+	// console.log(weekOpenTem);
 
 
     $.getJSON( weekOpenTem ,function(data){
-        console.log(data);
+        // console.log(data);
 		
 		let weekMaxTem2 = document.getElementById("dayMaxTem2");
 		weekMaxTem2.innerText = parseInt(data.response.body.items.item[0].taMax3);
@@ -299,25 +379,9 @@ function viewWeekWeather(findCode){
 		let todayCity = document.querySelector('#todayCity');
 		todayCity.innerText = document.getElementById("address_detail3").value;
 		
-
-        // for (let i = 2; i < 6; i++) {
-        //     let weekMaxTem = document.getElementById("dayMaxTem" + i);
-        //     let weekMinTem = document.getElementById("dayMinTem" + i);
-
-        //     weekMinTem.innerText = parseInt(data.daily[i].temp.min);
-        //     weekMaxTem.innerText = parseInt(data.response.body.items.item[0].taMax3);
-        // }
-
-        
-
-        // let todayTemMin = document.querySelector('#todayTemMin');
-        // let openTemMin = parseInt(data.daily[0].temp.min);
-        // todayTemMin.innerText = openTemMin;
-
-        // let todayTemMax = document.querySelector('#todayTemMax');
-        // let openTemMax = parseInt(data.daily[0].temp.max);
-        // todayTemMax.innerText = openTemMax;
     });
+
+
 
 }
 	
