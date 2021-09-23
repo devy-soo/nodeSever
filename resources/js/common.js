@@ -1,7 +1,3 @@
-
-
-console.log(test)
-
 /* ### 현재위치 ### */
 
 let geoCoords = 'coords';
@@ -291,7 +287,7 @@ function viewWeekWeather(findCode){
 
 
 	$.ajax({
-		url : test,
+		url : weekOpenTem,
 		type : 'GET',
 		success : function(data) {
 			

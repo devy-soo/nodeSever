@@ -2,7 +2,7 @@ const express = require('express')    // node_modules 에 있는 express 관련 
 const app = express()    // express 는 함수이므로, 반환값을 변수에 저장한다.
 const request = require('request')
 const cheerio = require('cheerio')
-const router = express.Router()
+
 
 const bodyParser = require('body-parser')
 
@@ -26,13 +26,9 @@ app.listen(8080, function() {
     console.log("start! express app on port 8080")
 })
 
-// localhost:8080 브라우저에 res.sendFile() 내부의 파일이 띄워진다.
-app.get('/', function(req,res,next) {
-  res.sendFile(__dirname + "/resources/index.html")
-})
-
+// localhost:8080/main 브라우저에 res.sendFile() 내부의 파일이 띄워진다.
 app.get('/', function(req,res) {
-  res.render(__dirname + "/resources/index.html",{title:"hello"})
+  res.sendFile(__dirname + "/resources/index.html")
 })
 
 // public 디렉토리를 static으로 기억한다.
@@ -48,6 +44,7 @@ app.use((req, res, next) => {
 
 
 
+
 const openKey = 'lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D';
 
 let today = new Date();
@@ -58,50 +55,18 @@ let openDate = todayFormet + '0600';
 // 중기 예보 3-7일  (일주일 기온)
 let weekOpenTem =`http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=11D20501&tmFc=${openDate}`
 
-var a = function(){
-	let temp
-	request.get(weekOpenTem, (error, response, body) => {
-		if (error) throw error;
-		try{
-			let $ = cheerio.load(body);
-			temp = body
-			// const weekOpenTemJson = JSON.stringify(body);
-			// console.log(weekOpenTemJson);
-		}
-		catch(error){
-			console.error(error);
-		}
-	});
-	
-return temp;
-}
-/*
+request.get(weekOpenTem, (error, response, body) => {
+	if (error) throw error;
+	try{
+		let $ = cheerio.load(body);
+		// const weekOpenTemJson = JSON.stringify(body);
+		// console.log(weekOpenTemJson);
+	}
+	catch(error){
+		console.error(error);
+	}
+});
 
-router.post('/location',function (req,res){ ///프론트에서 fetch로 요청한 location 친구
-
-    console.log("연결 1!!!")    //확인용
-    airdata(req.body.sidoName,(error, {air}={})=>{  //airdata함수에 fetch해준 req->body->sidoName를 보내준다
-        if(error){      //에러 발생시
-            console.log("가나다라마바사!!");
-            return res.send({error})
-        }
-        return res.send(air);   // airdata에서 받은 객체를 프론틀앤드로 보내준다. 
-    })
-})
-
-
-
-router.get(weekOpenTem, function(req, res, next){
-	request(myaddr, function(error, response, body){
-	  if(error){
-		console.log(error)
-	  }
-	  var obj = JSON.parse(body)
-	  console.log(obj) // 콘솔창에 찍어보기
-	})
-  })
-
-  */
 
 
 
