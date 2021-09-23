@@ -272,7 +272,7 @@ function viewWeekWeather(findCode){
 
     $.getJSON( day2OpenTem ,function(data){
 
-        console.log(data);
+        // console.log(data);
 
 		let hours = today.getHours(); 
 
@@ -296,7 +296,7 @@ function viewWeekWeather(findCode){
 			weekMaxTem1.innerText = parseInt(data.response.body.items.item[2].ta);
 
 			
-			// 2일 아이콘
+			// 2일 아이콘 진행중
 			let dayIcon1 = document.getElementById("dayIcon1");
 			let amDay2Weadter = data.response.body.items.item[1].rnYn;
 			let pmDay2Weadter = data.response.body.items.item[2].rnYn;
@@ -380,6 +380,22 @@ function viewWeekWeather(findCode){
 		todayCity.innerText = document.getElementById("address_detail3").value;
 		
     });
+
+
+
+
+	// 3~7 아이콘
+	let weekOpenIcon = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=${openKey}&pageNo=1&numOfRows=10&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
+
+	// http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=10&dataType=JSON&regId=11B00000&tmFc=202109230600
+	
+	console.log(weekOpenIcon);
+
+
+    $.getJSON( weekOpenIcon ,function(data){
+        console.log(data);
+    });
+
 
 
 
