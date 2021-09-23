@@ -1,6 +1,6 @@
+// import test from '../../server.js'
 
-
-console.log(test)
+// console.log(test)
 
 /* ### 현재위치 ### */
 
