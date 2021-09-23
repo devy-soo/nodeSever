@@ -245,7 +245,6 @@ let openDate = todayFormet + '0600';
 
 
 
-
 // 중기 예보 3-7일  (일주일 기온)
 function viewWeekWeather(findCode){
 
@@ -260,7 +259,6 @@ function viewWeekWeather(findCode){
 
 	console.log(weekOpenTem);
 
-	/*
 
     $.getJSON( weekOpenTem ,function(data){
         // console.log(data);
@@ -283,89 +281,6 @@ function viewWeekWeather(findCode){
         let openTemMax = parseInt(data.daily[0].temp.max);
         todayTemMax.innerText = openTemMax;
     });
-	*/
 
-
-	$.ajax({
-		url : weekOpenTem,
-		type : 'GET',
-		success : function(data) {
-			
-			for (let i = 3; i < 6; i++) {
-				let weekMaxTem = document.getElementById("dayMaxTem" + i);
-				let weekMinTem = document.getElementById("dayMinTem" + i);
-	
-				weekMinTem.innerText = parseInt(data.daily[i].temp.min);
-				weekMaxTem.innerText = parseInt(data.daily[i].temp.max);
-			}
-	
-			
-	
-			let todayTemMin = document.querySelector('#todayTemMin');
-			let openTemMin = parseInt(data.daily[0].temp.min);
-			todayTemMin.innerText = openTemMin;
-	
-			let todayTemMax = document.querySelector('#todayTemMax');
-			let openTemMax = parseInt(data.daily[0].temp.max);
-			todayTemMax.innerText = openTemMax;
-
-		}
-		// ,error : function(e) {
-		// 	alert("실패했습니다");
-		// }
-	});
-
-
-
-
-	/*
-	fetch(weekOpenTem).then((response) =>
-		console.log(response)
-	);
-
-	fetch(`${weekOpenTem}`)
-		.then((res) => {
-		  console.log(res);
-		  return res.json();
-		})
-		.then((data) => {
-		  console.log(data);
-		});
-
-
-	*/
-
-	/*
-	var xhr = new XMLHttpRequest();
-	var url = weekOpenTem;
-	function simpleRequest() {
-		xhr.open('GET', url, true);    // GET 요청을 전송한다.
-		xhr.onreadystatechange = function(){
-			// ...
-		}
-		xhr.send();
-	}
-
-	simpleRequest();
-	*/
-
-/*
-	var xhr = new XMLHttpRequest();
-	var url = 'http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa'; 
-	var queryParams = '?' + encodeURIComponent('ServiceKey') + '='+'lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D'; 
-	queryParams += '&' + encodeURIComponent('pageNo') + '=' + encodeURIComponent('1');
-	queryParams += '&' + encodeURIComponent('numOfRows') + '=' + encodeURIComponent('10'); 
-	queryParams += '&' + encodeURIComponent('dataType') + '=' + encodeURIComponent('JSON'); 
-	queryParams += '&' + encodeURIComponent('stnId') + '=' + encodeURIComponent('11B10101'); 
-	queryParams += '&' + encodeURIComponent('tmFc') + '=' + encodeURIComponent('202109160600'); 
-	xhr.open('GET', url + queryParams);
-	xhr.onreadystatechange = function () {
-		if (this.readyState == 4) {
-			alert('Status: '+this.status+'nHeaders: '+JSON.stringify(this.getAllResponseHeaders())+'nBody: '+this.responseText);
-		}
-	};
-
-	xhr.send('');
-	*/
 }
 	
