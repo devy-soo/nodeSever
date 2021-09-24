@@ -195,6 +195,7 @@ window.onload = function(){
   
 				
 			  findRegid1(addressName2, addressName3);
+			  weekRegionSelect(addressName2, addressName3);
 			}
 		}).open();
 	});
@@ -280,10 +281,10 @@ function viewWeekWeather(findCode){
 		if( 5 <= hours && hours <= 11 ){
 
 			let weekMinTem1 = document.getElementById("dayMinTem1");
-			weekMinTem1.innerText = parseInt(data.response.body.items.item[3].ta);
+			weekMinTem1.innerText = parseInt(data.response.body.items.item[2].ta);
 
 			let weekMaxTem1 = document.getElementById("dayMaxTem1");
-			weekMaxTem1.innerText = parseInt(data.response.body.items.item[2].ta);
+			weekMaxTem1.innerText = parseInt(data.response.body.items.item[3].ta);
 		}
 
 		//  pm12 ~ 다음날 am 4
@@ -301,6 +302,7 @@ function viewWeekWeather(findCode){
 			let amDay2Weadter = data.response.body.items.item[1].rnYn;
 			let pmDay2Weadter = data.response.body.items.item[2].rnYn;
 
+			/*
 			if( amDay2Weadter == 0 && pmDay2Weadter == 0 ){
 				return 0;
 			}else if( amDay2Weadter != 0 && pmDay2Weadter != 0 ){
@@ -320,12 +322,9 @@ function viewWeekWeather(findCode){
 					return amDay2Weadter;
 				}
 			}
+			*/
 
 		}
-
-
-
-
 
 
 
@@ -382,22 +381,143 @@ function viewWeekWeather(findCode){
     });
 
 
+}
+
+
+
+
+
+
+// 3-7 날씨 아이콘
+const weekIconRegionArr = [
+	{region: "서울", code: "11B00000"},
+	{region: "인천", code: "11B00000"},
+	{region: "경기", code: "11B00000"},
+	{region: "강원도영서", code: "11B00000"},
+	{region: "강원도영동", code: "11D20000"},
+	{region: "대전", code: "11C20000"},
+	{region: "세종특별자치시", code: "11C20000"},
+	{region: "충남", code: "11C20000"},
+	{region: "충북", code: "11C20000"},
+	{region: "광주", code: "11F20000"},
+	{region: "전남", code: "11F20000"},
+	{region: "전북", code: "11F10000"},
+	{region: "대구", code: "11H10000"},
+	{region: "경북", code: "11H10000"},
+	{region: "부산", code: "11H20000"},
+	{region: "울산", code: "11H20000"},
+	{region: "경남", code: "11H20000"},
+	{region: "제주특별자치도", code: "11G00000"}
+];
+
+
+function weekRegionSelect(addressName2, addressName3){
+
+	let weekRegionCode;
+
+	if( addressName2 == '강원'){
+
+		if( addressName3 == '고성군' || addressName3 == '속초시' || addressName3 == '양양군' || addressName3 == '강릉시' || addressName3 == '동해시' || addressName3 == '삼척시' || addressName3 == '태백시' ){
+			let weekIconRegion = {region: "강원도영동", code: "11D20000"};
+			weekRegionCode = weekIconRegion.code;
+		}else{
+			let weekIconRegion = {region: "강원도영서", code: "11B00000"};
+			weekRegionCode = weekIconRegion.code;
+		}
+
+	}else{
+
+		let weekIconRegion = weekIconRegionArr.find(x => x.region === addressName2);
+		weekRegionCode = weekIconRegion.code;
+
+	}
+
+
 
 
 	// 3~7 아이콘
-	let weekOpenIcon = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=${openKey}&pageNo=1&numOfRows=10&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
+	let weekOpenIcon = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=${openKey}&pageNo=1&numOfRows=10&dataType=json&regId=${weekRegionCode}&tmFc=${openDate}`;
 
 	// http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=10&dataType=JSON&regId=11B00000&tmFc=202109230600
-	
-	console.log(weekOpenIcon);
 
 
     $.getJSON( weekOpenIcon ,function(data){
-        console.log(data);
+
+		console.log(data);
+
+		let iconString3 = data.response.body.items.item[0].wf3Am + data.response.body.items.item[0].wf3Pm;
+		let iconString4 = data.response.body.items.item[0].wf4Am + data.response.body.items.item[0].wf4Pm;
+		let iconString5 = data.response.body.items.item[0].wf5Am + data.response.body.items.item[0].wf5Pm;
+		let iconString6 = data.response.body.items.item[0].wf6Am + data.response.body.items.item[0].wf6Pm;
+
+		let iconArray = [iconString3, iconString4, iconString5, iconString6];
+
+
+		for(let i = 3; i < 7; i++){
+			let dayIcon =  document.getElementById('dayIcon' + i);
+			let iconString = iconArray[i-3];
+			console.log(iconString);
+
+			let snowIs = iconString.indexOf('눈');
+			let rainIs = iconString.indexOf('비');
+			let showerIcon = iconString.indexOf('소나기');
+			let sunnyIcon = iconString.indexOf('맑음');
+
+
+			if( (rainIs!=-1 || showerIcon!=-1) && snowIs!=-1){
+				dayIcon.className = 'xi-umbrella-o';
+	
+			}else if( rainIs!=-1 || showerIcon!=-1 ){
+				dayIcon.className = 'xi-pouring';
+	
+			}else if( snowIs!=-1 ){
+				dayIcon.className = 'xi-pouring';
+	
+			}else if( sunnyIcon!=-1 ){
+				dayIcon.className = 'xi-sun-o';
+	
+			}else{
+				dayIcon.className = 'xi-cloudy';
+	
+			}
+
+		}
+
+        
     });
 
 
-
-
-}
 	
+}
+
+
+
+
+
+
+/*
+
+function weatherIcon( amIcon, pmIcon){
+	
+	if( amIcon == 0 && pmIcon == 0 ){
+		return 0;
+	}else if( amIcon != 0 && pmIcon != 0 ){
+		if( amIcon == pmIcon){
+			return amIcon;
+		}else{
+			if(amIcon == 2 || pmIcon == 2 || amIcon == 3 || pmIcon == 3){
+				return 2;
+			}else{
+				return 1;
+			}
+		}
+	}else{
+		if( amIcon == 0){
+			return pmIcon;
+		}else if( pmIcon == 0 ){
+			return amIcon;
+		}
+	}
+}
+
+*/
