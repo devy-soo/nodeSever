@@ -236,6 +236,7 @@ function convertCode(regionName){
 	// console.log(findCode[0].code);
 
 	viewWeekWeather(findCode);
+	day2Weather(findCode);
   
 }
 
@@ -263,12 +264,15 @@ for(let i = 0; i < 7; i++){
 }
 
 
-// 중기 예보 3-7일  (일주일 기온)
-function viewWeekWeather(findCode){
 
+
+
+
+
+function day2Weather(findCode){
 	let selectCodes = findCode[0].code;
 	
-	// 2일
+	// 1-2 기온
     let day2OpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${selectCodes}`;
 
     $.getJSON( day2OpenTem ,function(data){
@@ -285,6 +289,12 @@ function viewWeekWeather(findCode){
 
 			let weekMaxTem1 = document.getElementById("dayMaxTem1");
 			weekMaxTem1.innerText = parseInt(data.response.body.items.item[3].ta);
+
+			let weekMinTem2 = document.getElementById("dayMinTem2");
+			weekMinTem2.innerText = parseInt(data.response.body.items.item[4].ta);
+
+			let weekMaxTem2 = document.getElementById("dayMaxTem2");
+			weekMaxTem2.innerText = parseInt(data.response.body.items.item[5].ta);
 		}
 
 		//  pm12 ~ 다음날 am 4
@@ -296,15 +306,29 @@ function viewWeekWeather(findCode){
 			let weekMaxTem1 = document.getElementById("dayMaxTem1");
 			weekMaxTem1.innerText = parseInt(data.response.body.items.item[2].ta);
 
+			let weekMinTem2 = document.getElementById("dayMinTem2");
+			weekMinTem2.innerText = parseInt(data.response.body.items.item[3].ta);
+
+			let weekMaxTem2 = document.getElementById("dayMaxTem2");
+			weekMaxTem2.innerText = parseInt(data.response.body.items.item[4].ta);
+
 			
 			// 2일 아이콘 진행중
 			let dayIcon1 = document.getElementById("dayIcon1");
-			let amDay2Weadter = data.response.body.items.item[1].rnYn;
-			let pmDay2Weadter = data.response.body.items.item[2].rnYn;
+			let amDay2Water = data.response.body.items.item[1].rnYn;
+			let pmDay2Water = data.response.body.items.item[2].rnYn;
+			let amDay2Sky = data.response.body.items.item[1].wfCd;
+			let pmDay2Sky = data.response.body.items.item[2].wfCd;
 
+			
 			/*
-			if( amDay2Weadter == 0 && pmDay2Weadter == 0 ){
-				return 0;
+			if( amDay2Water == 0 && pmDay2Water == 0 ){
+				if( amDay2Sky ){
+					
+				}else{
+
+				}
+
 			}else if( amDay2Weadter != 0 && pmDay2Weadter != 0 ){
 				if( amDay2Weadter == pmDay2Weadter){
 					return amDay2Weadter;
@@ -322,6 +346,7 @@ function viewWeekWeather(findCode){
 					return amDay2Weadter;
 				}
 			}
+
 			*/
 
 		}
@@ -331,10 +356,20 @@ function viewWeekWeather(findCode){
     });
 
 
+}
 
 
 
-	// 3~7일
+
+
+
+
+// 중기 예보 3-7일  (일주일 기온)
+function viewWeekWeather(findCode){
+
+	let selectCodes = findCode[0].code;
+
+	// 3~7일 기온
     let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
 
 	// console.log(weekOpenTem);
@@ -343,35 +378,31 @@ function viewWeekWeather(findCode){
     $.getJSON( weekOpenTem ,function(data){
         // console.log(data);
 		
-		let weekMaxTem2 = document.getElementById("dayMaxTem2");
-		weekMaxTem2.innerText = parseInt(data.response.body.items.item[0].taMax3);
-
 		let weekMaxTem3 = document.getElementById("dayMaxTem3");
-		weekMaxTem3.innerText = parseInt(data.response.body.items.item[0].taMax4);
+		weekMaxTem3.innerText = parseInt(data.response.body.items.item[0].taMax3);
 
 		let weekMaxTem4 = document.getElementById("dayMaxTem4");
-		weekMaxTem4.innerText = parseInt(data.response.body.items.item[0].taMax5);
+		weekMaxTem4.innerText = parseInt(data.response.body.items.item[0].taMax4);
 
 		let weekMaxTem5 = document.getElementById("dayMaxTem5");
-		weekMaxTem5.innerText = parseInt(data.response.body.items.item[0].taMax6);
+		weekMaxTem5.innerText = parseInt(data.response.body.items.item[0].taMax5);
 
 		let weekMaxTem6 = document.getElementById("dayMaxTem6");
-		weekMaxTem6.innerText = parseInt(data.response.body.items.item[0].taMax7);
+		weekMaxTem6.innerText = parseInt(data.response.body.items.item[0].taMax6);
 
-		let weekMinTem2 = document.getElementById("dayMinTem2");
-		weekMinTem2.innerText = parseInt(data.response.body.items.item[0].taMin3);
 
 		let weekMinTem3 = document.getElementById("dayMinTem3");
-		weekMinTem3.innerText = parseInt(data.response.body.items.item[0].taMin4);
+		weekMinTem3.innerText = parseInt(data.response.body.items.item[0].taMin3);
 
 		let weekMinTem4 = document.getElementById("dayMinTem4");
-		weekMinTem4.innerText = parseInt(data.response.body.items.item[0].taMin5);
+		weekMinTem4.innerText = parseInt(data.response.body.items.item[0].taMin4);
 
 		let weekMinTem5 = document.getElementById("dayMinTem5");
-		weekMinTem5.innerText = parseInt(data.response.body.items.item[0].taMin6);
+		weekMinTem5.innerText = parseInt(data.response.body.items.item[0].taMin5);
 
 		let weekMinTem6 = document.getElementById("dayMinTem6");
-		weekMinTem6.innerText = parseInt(data.response.body.items.item[0].taMin7);
+		weekMinTem6.innerText = parseInt(data.response.body.items.item[0].taMin6);
+
 
 
 		
@@ -385,20 +416,15 @@ function viewWeekWeather(findCode){
 
 
 
-
-
-
 // 3-7 날씨 아이콘
 const weekIconRegionArr = [
 	{region: "서울", code: "11B00000"},
 	{region: "인천", code: "11B00000"},
 	{region: "경기", code: "11B00000"},
-	{region: "강원도영서", code: "11B00000"},
-	{region: "강원도영동", code: "11D20000"},
 	{region: "대전", code: "11C20000"},
 	{region: "세종특별자치시", code: "11C20000"},
 	{region: "충남", code: "11C20000"},
-	{region: "충북", code: "11C20000"},
+	{region: "충북", code: "11C10000"},
 	{region: "광주", code: "11F20000"},
 	{region: "전남", code: "11F20000"},
 	{region: "전북", code: "11F10000"},
@@ -434,7 +460,6 @@ function weekRegionSelect(addressName2, addressName3){
 
 
 
-
 	// 3~7 아이콘
 	let weekOpenIcon = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=${openKey}&pageNo=1&numOfRows=10&dataType=json&regId=${weekRegionCode}&tmFc=${openDate}`;
 
@@ -456,7 +481,6 @@ function weekRegionSelect(addressName2, addressName3){
 		for(let i = 3; i < 7; i++){
 			let dayIcon =  document.getElementById('dayIcon' + i);
 			let iconString = iconArray[i-3];
-			console.log(iconString);
 
 			let snowIs = iconString.indexOf('눈');
 			let rainIs = iconString.indexOf('비');
@@ -494,30 +518,3 @@ function weekRegionSelect(addressName2, addressName3){
 
 
 
-
-/*
-
-function weatherIcon( amIcon, pmIcon){
-	
-	if( amIcon == 0 && pmIcon == 0 ){
-		return 0;
-	}else if( amIcon != 0 && pmIcon != 0 ){
-		if( amIcon == pmIcon){
-			return amIcon;
-		}else{
-			if(amIcon == 2 || pmIcon == 2 || amIcon == 3 || pmIcon == 3){
-				return 2;
-			}else{
-				return 1;
-			}
-		}
-	}else{
-		if( amIcon == 0){
-			return pmIcon;
-		}else if( pmIcon == 0 ){
-			return amIcon;
-		}
-	}
-}
-
-*/

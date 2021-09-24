@@ -121,9 +121,13 @@ section{
     dt{
       font-size: 1.2rem;
     }
-    i{
-      font-size: 3rem;
-      margin:1rem auto;
+    div{
+      display: flex;
+      align-items: center;
+      i{
+        font-size: 1.9rem;
+        margin:1rem auto;
+      }
     }
     dd{
       font-size: 0.9rem;
