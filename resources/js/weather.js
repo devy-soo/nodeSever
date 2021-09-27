@@ -251,11 +251,12 @@ const openKey = 'lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZV
 const today = new Date();
 let todayFormet = today.toISOString().substring(0,10).replace(/-/g,''); //yyyymmdd
 let openDate = todayFormet + '0600';
+let hours = today.getHours(); 
 
 
 
 // 일주일 날짜
-for(let i = 0; i < 7; i++){
+for(let i = 1; i < 7; i++){
 	const dayStandard = new Date();
 
 	dayStandard.setDate(today.getDate() + i);
@@ -291,7 +292,6 @@ function day2Weather(findCode){
         // console.log(data);
         // console.log(day2OpenTem);
 
-		let hours = today.getHours(); 
 
 		// 최저최고
 		let weekMinTem1 = document.getElementById("dayMinTem1");
@@ -313,13 +313,11 @@ function day2Weather(findCode){
 		let temp3 = data.response.body.items.item[3].ta;
 		let temp4 = data.response.body.items.item[4].ta;
 		
-		let sky0 = data.response.body.items.item[0].wfCd;
 		let sky1 = data.response.body.items.item[1].wfCd;
 		let sky2 = data.response.body.items.item[2].wfCd;
 		let sky3 = data.response.body.items.item[3].wfCd;
 		let sky4 = data.response.body.items.item[4].wfCd;
 		
-		let water0 = data.response.body.items.item[0].rnYn;
 		let water1 = data.response.body.items.item[1].rnYn;
 		let water2 = data.response.body.items.item[2].rnYn;
 		let water3 = data.response.body.items.item[3].rnYn;
@@ -333,10 +331,6 @@ function day2Weather(findCode){
 
 			let todayTemMin = document.getElementById("todayTemMin");
 			let todayTemMax = document.getElementById("todayTemMax");
-			let weekMinTem0 = document.getElementById("dayMinTem0");
-			let weekMaxTem0 = document.getElementById("dayMaxTem0");
-			let day0IconAm = document.getElementById("dayIcon0");
-			let day0IconPm = document.getElementById("dayIcon1");
 			
 			let temp5 = data.response.body.items.item[5].ta;
 			let temp6 = data.response.body.items.item[6].ta;
@@ -348,15 +342,11 @@ function day2Weather(findCode){
 
 			todayTemMin.innerText = parseInt(temp1);
 			todayTemMax.innerText = parseInt(temp2);
-			weekMinTem0.innerText = parseInt(temp1);
-			weekMaxTem0.innerText = parseInt(temp2);
 			weekMinTem1.innerText = parseInt(temp3);
 			weekMaxTem1.innerText = parseInt(temp4);
 			weekMinTem2.innerText = parseInt(temp5);
 			weekMaxTem2.innerText = parseInt(temp6);
 
-			dayIconSetting( day0IconAm, sky1, water1);
-			dayIconSetting( day0IconPm, sky2, water2);
 			dayIconSetting( day1IconAm, sky3, water3);
 			dayIconSetting( day1IconPm, sky4, water4);
 			dayIconSetting( day2IconAm, sky5, water5);
@@ -371,10 +361,6 @@ function day2Weather(findCode){
 
 			let todayTemMin = document.getElementById("todayTemMin");
 			let todayTemMax = document.getElementById("todayTemMax");
-			let weekMinTem0 = document.getElementById("dayMinTem0");
-			let weekMaxTem0 = document.getElementById("dayMaxTem0");
-			let day0IconAm = document.getElementById("dayIcon0");
-			let day0IconPm = document.getElementById("dayIcon1");
 			
 			let temp5 = data.response.body.items.item[5].ta;
 			let sky5 = data.response.body.items.item[5].wfCd;
@@ -383,15 +369,11 @@ function day2Weather(findCode){
 
 			todayTemMin.innerText = parseInt(temp0);
 			todayTemMax.innerText = parseInt(temp1);
-			weekMinTem0.innerText = parseInt(temp0);
-			weekMaxTem0.innerText = parseInt(temp1);
 			weekMinTem1.innerText = parseInt(temp2);
 			weekMaxTem1.innerText = parseInt(temp3);
 			weekMinTem2.innerText = parseInt(temp4);
 			weekMaxTem2.innerText = parseInt(temp5);
 
-			dayIconSetting( day0IconAm, sky0, water0);
-			dayIconSetting( day0IconPm, sky1, water1);
 			dayIconSetting( day1IconAm, sky2, water2);
 			dayIconSetting( day1IconPm, sky3, water3);
 			dayIconSetting( day2IconAm, sky4, water4);
@@ -466,7 +448,7 @@ function viewWeekWeather(findCode){
 	// 3~7일 기온
     let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
 
-	// console.log(weekOpenTem);
+	console.log(weekOpenTem);
 
 
     $.getJSON( weekOpenTem ,function(data){
@@ -667,6 +649,10 @@ function changeRS(searchInfo){
 	// 위도/경도 -> 기상청 좌표x / 좌표 y 변환
 	searchWeather(rs.nx, rs.ny);
 
+	if( hours > 10 ){
+		todayTemp11(rs.nx, rs.ny);
+	}
+
 	// console.log(rs);
 }
 
@@ -684,7 +670,7 @@ function searchWeather(nx, ny){
 
     $.getJSON( todayOpenWeater ,function(data){
 
-		console.log(data);
+		// console.log(data);
 
 		
 		let todayIcon = document.getElementById("todayIcon");
@@ -695,7 +681,7 @@ function searchWeather(nx, ny){
 		let sky = data.response.body.items.item[5].fcstValue;
 		let water = data.response.body.items.item[6].fcstValue;
 
-		console.log(sky +"&"+ water);
+		// console.log(sky +"&"+ water);
 
 		todayTemp.innerText = temp;
 
@@ -737,27 +723,40 @@ function searchWeather(nx, ny){
 
 
 
-/*
-11시 이후 최저 최고 온도
-
-function searchWeather(nx, ny){
+// 11시 이후 최저 최고 온도
+function todayTemp11(nx, ny){
 	
 	// 현재 날씨
-	let todayOpenWeater = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
-
-	// !!!!!! base time 시간 계산 함수 필요
+	let todayTempMin = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=5&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
+	let todayTempMax = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=9&dataType=json&base_date=${todayFormet}&base_time=0800&nx=${nx}&ny=${ny}`;
 
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
 
 
-    $.getJSON( todayOpenWeater ,function(data){
+    $.getJSON( todayTempMin ,function(data){
 
 		console.log(data);
 
+		let todayTemMin = document.getElementById("todayTemMin");
+		let temp = data.response.body.items.item[8].fcstValue;
+
+		todayTemMin.innerText = parseInt(temp);
         
     });
-}
 
-*/
+
+	
+
+    $.getJSON( todayTempMax ,function(data){
+
+		console.log(data);
+		
+		let todayTemMax = document.getElementById("todayTemMax");
+		let temp = data.response.body.items.item[4].fcstValue;
+
+		todayTemMax.innerText = parseInt(temp);
+
+    });
+}
 
 
