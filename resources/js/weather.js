@@ -130,7 +130,7 @@ function openCityName(loadedCordsObject){
 
 		},
 		error : function(e) {
-		alert("주소를 불러오는데 실패했습니다");
+			alert("주소를 불러오는데 실패했습니다");
 		}
 	});
 
@@ -196,10 +196,13 @@ window.onload = function(){
 				
 			  findRegid1(addressName2, addressName3);
 			  weekRegionSelect(addressName2, addressName3);
+			  
+			  addressToLocation(addressName);
 			}
 		}).open();
 	});
 }
+
 
 
 
@@ -265,6 +268,14 @@ for(let i = 0; i < 7; i++){
 
 
 
+let todayDate = document.getElementById("todayDate");
+
+const today1 = new Date();
+today1.setDate(today1.getDate());
+let dayDate1 = ("0" + (1 + today1.getMonth())).slice(-2);
+let dayDate2 = ("0" + today1.getDate()).slice(-2);
+todayDate.innerText = `${dayDate1}월 ${dayDate2}일`;              
+
 
 
 
@@ -278,78 +289,157 @@ function day2Weather(findCode){
     $.getJSON( day2OpenTem ,function(data){
 
         // console.log(data);
+        // console.log(day2OpenTem);
 
 		let hours = today.getHours(); 
 
+		// 최저최고
+		let weekMinTem1 = document.getElementById("dayMinTem1");
+		let weekMaxTem1 = document.getElementById("dayMaxTem1");
+		let weekMinTem2 = document.getElementById("dayMinTem2");
+		let weekMaxTem2 = document.getElementById("dayMaxTem2");
+
+		// 아이콘
+		let day1IconAm = document.getElementById("dayIcon2");
+		let day1IconPm = document.getElementById("dayIcon3");
+		let day2IconAm = document.getElementById("dayIcon4");
+		let day2IconPm = document.getElementById("dayIcon5");
+
+
+
+		let temp0 = data.response.body.items.item[0].ta;
+		let temp1 = data.response.body.items.item[1].ta;
+		let temp2 = data.response.body.items.item[2].ta;
+		let temp3 = data.response.body.items.item[3].ta;
+		let temp4 = data.response.body.items.item[4].ta;
+		
+		let sky0 = data.response.body.items.item[0].wfCd;
+		let sky1 = data.response.body.items.item[1].wfCd;
+		let sky2 = data.response.body.items.item[2].wfCd;
+		let sky3 = data.response.body.items.item[3].wfCd;
+		let sky4 = data.response.body.items.item[4].wfCd;
+		
+		let water0 = data.response.body.items.item[0].rnYn;
+		let water1 = data.response.body.items.item[1].rnYn;
+		let water2 = data.response.body.items.item[2].rnYn;
+		let water3 = data.response.body.items.item[3].rnYn;
+		let water4 = data.response.body.items.item[4].rnYn;
+
+
+		//  ~ am 4
+		if( 5 > hours ){
+			// console.log(data);
+			console.log("~ am 4"); 
+
+			let todayTemMin = document.getElementById("todayTemMin");
+			let todayTemMax = document.getElementById("todayTemMax");
+			let weekMinTem0 = document.getElementById("dayMinTem0");
+			let weekMaxTem0 = document.getElementById("dayMaxTem0");
+			let day0IconAm = document.getElementById("dayIcon0");
+			let day0IconPm = document.getElementById("dayIcon1");
+			
+			let temp5 = data.response.body.items.item[5].ta;
+			let temp6 = data.response.body.items.item[6].ta;
+			let sky5 = data.response.body.items.item[5].wfCd;
+			let sky6 = data.response.body.items.item[6].wfCd;
+			let water5 = data.response.body.items.item[5].rnYn;
+			let water6 = data.response.body.items.item[6].rnYn;
+
+
+			todayTemMin.innerText = parseInt(temp1);
+			todayTemMax.innerText = parseInt(temp2);
+			weekMinTem0.innerText = parseInt(temp1);
+			weekMaxTem0.innerText = parseInt(temp2);
+			weekMinTem1.innerText = parseInt(temp3);
+			weekMaxTem1.innerText = parseInt(temp4);
+			weekMinTem2.innerText = parseInt(temp5);
+			weekMaxTem2.innerText = parseInt(temp6);
+
+			dayIconSetting( day0IconAm, sky1, water1);
+			dayIconSetting( day0IconPm, sky2, water2);
+			dayIconSetting( day1IconAm, sky3, water3);
+			dayIconSetting( day1IconPm, sky4, water4);
+			dayIconSetting( day2IconAm, sky5, water5);
+			dayIconSetting( day2IconPm, sky6, water6);
+		}
+
+
 		// am 5 ~ am 11
-		if( 5 <= hours && hours <= 11 ){
+		if( 5 <= hours && hours <= 10 ){
+			// console.log(data); 
+			console.log("am 5 ~ am 10"); 
 
-			let weekMinTem1 = document.getElementById("dayMinTem1");
-			weekMinTem1.innerText = parseInt(data.response.body.items.item[2].ta);
+			let todayTemMin = document.getElementById("todayTemMin");
+			let todayTemMax = document.getElementById("todayTemMax");
+			let weekMinTem0 = document.getElementById("dayMinTem0");
+			let weekMaxTem0 = document.getElementById("dayMaxTem0");
+			let day0IconAm = document.getElementById("dayIcon0");
+			let day0IconPm = document.getElementById("dayIcon1");
+			
+			let temp5 = data.response.body.items.item[5].ta;
+			let sky5 = data.response.body.items.item[5].wfCd;
+			let water5 = data.response.body.items.item[5].rnYn;
 
-			let weekMaxTem1 = document.getElementById("dayMaxTem1");
-			weekMaxTem1.innerText = parseInt(data.response.body.items.item[3].ta);
 
-			let weekMinTem2 = document.getElementById("dayMinTem2");
-			weekMinTem2.innerText = parseInt(data.response.body.items.item[4].ta);
+			todayTemMin.innerText = parseInt(temp0);
+			todayTemMax.innerText = parseInt(temp1);
+			weekMinTem0.innerText = parseInt(temp0);
+			weekMaxTem0.innerText = parseInt(temp1);
+			weekMinTem1.innerText = parseInt(temp2);
+			weekMaxTem1.innerText = parseInt(temp3);
+			weekMinTem2.innerText = parseInt(temp4);
+			weekMaxTem2.innerText = parseInt(temp5);
 
-			let weekMaxTem2 = document.getElementById("dayMaxTem2");
-			weekMaxTem2.innerText = parseInt(data.response.body.items.item[5].ta);
+			dayIconSetting( day0IconAm, sky0, water0);
+			dayIconSetting( day0IconPm, sky1, water1);
+			dayIconSetting( day1IconAm, sky2, water2);
+			dayIconSetting( day1IconPm, sky3, water3);
+			dayIconSetting( day2IconAm, sky4, water4);
+			dayIconSetting( day2IconPm, sky5, water5);
+		}
+		
+
+
+		//  pm11
+		if( hours > 10 ){
+			console.log("pm11 ~ "); 
+			// console.log(data);
+			
+			weekMinTem1.innerText = parseInt(temp1);
+			weekMaxTem1.innerText = parseInt(temp2);
+			weekMinTem2.innerText = parseInt(temp3);
+			weekMaxTem2.innerText = parseInt(temp4);
+
+			dayIconSetting( day1IconAm, sky1, water1);
+			dayIconSetting( day1IconPm, sky2, water2);
+			dayIconSetting( day2IconAm, sky3, water3);
+			dayIconSetting( day2IconPm, sky4, water4);
 		}
 
-		//  pm12 ~ 다음날 am 4
-		if( 5 > hours || hours > 11 ){
 
-			let weekMinTem1 = document.getElementById("dayMinTem1");
-			weekMinTem1.innerText = parseInt(data.response.body.items.item[1].ta);
+		// 1-2 날씨 아이콘
+		function dayIconSetting(dayIcon, sky, water){
 
-			let weekMaxTem1 = document.getElementById("dayMaxTem1");
-			weekMaxTem1.innerText = parseInt(data.response.body.items.item[2].ta);
-
-			let weekMinTem2 = document.getElementById("dayMinTem2");
-			weekMinTem2.innerText = parseInt(data.response.body.items.item[3].ta);
-
-			let weekMaxTem2 = document.getElementById("dayMaxTem2");
-			weekMaxTem2.innerText = parseInt(data.response.body.items.item[4].ta);
-
-			
-			// 2일 아이콘 진행중
-			let dayIcon1 = document.getElementById("dayIcon1");
-			let amDay2Water = data.response.body.items.item[1].rnYn;
-			let pmDay2Water = data.response.body.items.item[2].rnYn;
-			let amDay2Sky = data.response.body.items.item[1].wfCd;
-			let pmDay2Sky = data.response.body.items.item[2].wfCd;
-
-			
-			/*
-			if( amDay2Water == 0 && pmDay2Water == 0 ){
-				if( amDay2Sky ){
-					
+			if( water == 0 ){
+				if( sky == 'DB01'){
+					dayIcon.className = 'xi-sun-o';
 				}else{
-
+					dayIcon.className = 'xi-cloudy';
 				}
-
-			}else if( amDay2Weadter != 0 && pmDay2Weadter != 0 ){
-				if( amDay2Weadter == pmDay2Weadter){
-					return amDay2Weadter;
-				}else{
-					if(amDay2Weadter == 2 || pmDay2Weadter == 2 || amDay2Weadter == 3 || pmDay2Weadter == 3){
-						return 2;
-					}else{
-						return 1;
-					}
-				}
+	
+			}else if( water == 1 ||  water == 4 ){
+				dayIcon.className = 'xi-pouring';
+	
+			}else if( water == 3 ){
+				dayIcon.className = 'xi-snowy';
+				
 			}else{
-				if( amDay2Weadter == 0){
-					return pmDay2Weadter;
-				}else if( pmDay2Weadter == 0 ){
-					return amDay2Weadter;
-				}
-			}
-
-			*/
-
+				dayIcon.className = 'xi-umbrella-o';
+	
+			}	
+			
 		}
+		
 
 
 
@@ -357,6 +447,10 @@ function day2Weather(findCode){
 
 
 }
+
+
+
+
 
 
 
@@ -416,6 +510,8 @@ function viewWeekWeather(findCode){
 
 
 
+
+
 // 3-7 날씨 아이콘
 const weekIconRegionArr = [
 	{region: "서울", code: "11B00000"},
@@ -468,7 +564,7 @@ function weekRegionSelect(addressName2, addressName3){
 
     $.getJSON( weekOpenIcon ,function(data){
 
-		console.log(data);
+		// console.log(data);
 
 		let iconString3am = data.response.body.items.item[0].wf3Am
 		let iconString3pm = data.response.body.items.item[0].wf3Pm
@@ -519,5 +615,149 @@ function weekRegionSelect(addressName2, addressName3){
 
 
 
+
+
+
+
+
+/* 오늘 날씨  */
+
+// 주소로 주소 정보 가져오기
+function addressToLocation(addressName){
+    
+    let loca = `https://dapi.kakao.com/v2/local/search/address.json?query=${addressName}`;
+
+    $.ajax({
+        url : loca,
+        type : 'GET',
+        headers : {
+          'Authorization' : 'KakaoAK 2c9fafbd450c3523f216521256ccd060'
+        },
+        success : function(data) {
+        //   console.log(data);
+            // console.log(data.documents[0].x + "와" + data.documents[0].y);
+            // console.log(data.documents[0].road_address.region_2depth_name + " "+ data.documents[0].road_address.region_3depth_name );
+
+            let addressX = parseFloat(data.documents[0].x).toFixed(4);
+            let addressY = parseFloat(data.documents[0].y).toFixed(4);
+
+            const searchInfo = {
+                latitude : addressY,
+                longitude : addressX
+            };
+            
+            changeRS(searchInfo);
+
+        },
+        error : function(e) {
+          alert("주소를 불러오는데 실패했습니다");
+        }
+      });
+
+
+}
+
+
+
+// dfs_xy_conv(code, v1, v2);
+function changeRS(searchInfo){
+	let latitude = searchInfo.latitude,
+	longitude = searchInfo.longitude;
+	let rs = dfs_xy_conv("toXY",latitude,longitude);
+	// 위도/경도 -> 기상청 좌표x / 좌표 y 변환
+	searchWeather(rs.nx, rs.ny);
+
+	// console.log(rs);
+}
+
+
+
+function searchWeather(nx, ny){
+	
+	// 현재 날씨
+	let todayOpenWeater = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
+
+	// !!!!!! base time 시간 계산 함수 필요
+
+	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&dataType=json&base_date=20210927&base_time=0630&nx=55&ny=127
+
+
+    $.getJSON( todayOpenWeater ,function(data){
+
+		console.log(data);
+
+		
+		let todayIcon = document.getElementById("todayIcon");
+		let todayWeather = document.getElementById("todayWeather");
+		let todayTemp = document.getElementById("todayTem");
+
+		let temp = data.response.body.items.item[0].fcstValue;
+		let sky = data.response.body.items.item[5].fcstValue;
+		let water = data.response.body.items.item[6].fcstValue;
+
+		console.log(sky +"&"+ water);
+
+		todayTemp.innerText = temp;
+
+		
+
+		// 현재 아이콘
+		if( water == 0 ){
+			if( sky == 1 ){
+				todayIcon.className = 'xi-sun-o';
+				todayWeather.innerText = '맑음';
+			}else if( sky == 3 ){
+				todayIcon.className = 'xi-cloudy';
+				todayWeather.innerText = '구름 많음';
+			}else{
+				todayWeather.innerText = '흐림';
+			}
+
+		}else if( water == 1 ||  water == 5){
+			todayIcon.className = 'xi-pouring';
+			todayWeather.innerText = '비';
+
+		}else if( water == 2 ||  water == 6){
+			todayIcon.className = 'xi-umbrella-o';
+			todayWeather.innerText = '비와 눈';
+
+		}else if( water == 3 ||  water == 7 ){
+			todayIcon.className = 'xi-snowy';
+			todayWeather.innerText = '눈';
+			
+		}else{
+			console.log( `error 하늘:${sky} , 강수:${water}` );
+		}	
+			
+
+        
+    });
+}
+
+
+
+
+/*
+11시 이후 최저 최고 온도
+
+function searchWeather(nx, ny){
+	
+	// 현재 날씨
+	let todayOpenWeater = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
+
+	// !!!!!! base time 시간 계산 함수 필요
+
+	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
+
+
+    $.getJSON( todayOpenWeater ,function(data){
+
+		console.log(data);
+
+        
+    });
+}
+
+*/
 
 
