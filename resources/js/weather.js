@@ -470,17 +470,21 @@ function weekRegionSelect(addressName2, addressName3){
 
 		console.log(data);
 
-		let iconString3 = data.response.body.items.item[0].wf3Am + data.response.body.items.item[0].wf3Pm;
-		let iconString4 = data.response.body.items.item[0].wf4Am + data.response.body.items.item[0].wf4Pm;
-		let iconString5 = data.response.body.items.item[0].wf5Am + data.response.body.items.item[0].wf5Pm;
-		let iconString6 = data.response.body.items.item[0].wf6Am + data.response.body.items.item[0].wf6Pm;
+		let iconString3am = data.response.body.items.item[0].wf3Am
+		let iconString3pm = data.response.body.items.item[0].wf3Pm
+		let iconString4am = data.response.body.items.item[0].wf4Am;
+		let iconString4pm = data.response.body.items.item[0].wf4Pm;
+		let iconString5am = data.response.body.items.item[0].wf5Am;
+		let iconString5pm = data.response.body.items.item[0].wf5Pm;
+		let iconString6am = data.response.body.items.item[0].wf6Am;
+		let iconString6pm = data.response.body.items.item[0].wf6Pm;
 
-		let iconArray = [iconString3, iconString4, iconString5, iconString6];
+		let iconArray = [iconString3am, iconString3pm, iconString4am, iconString4pm, iconString5am, iconString5pm ,iconString6am, iconString6pm];
 
 
-		for(let i = 3; i < 7; i++){
+		for(let i = 6; i < 14; i++){
 			let dayIcon =  document.getElementById('dayIcon' + i);
-			let iconString = iconArray[i-3];
+			let iconString = iconArray[i-6];
 
 			let snowIs = iconString.indexOf('눈');
 			let rainIs = iconString.indexOf('비');
@@ -495,7 +499,7 @@ function weekRegionSelect(addressName2, addressName3){
 				dayIcon.className = 'xi-pouring';
 	
 			}else if( snowIs!=-1 ){
-				dayIcon.className = 'xi-pouring';
+				dayIcon.className = 'xi-snowy';
 	
 			}else if( sunnyIcon!=-1 ){
 				dayIcon.className = 'xi-sun-o';
@@ -506,7 +510,6 @@ function weekRegionSelect(addressName2, addressName3){
 			}
 
 		}
-
         
     });
 
