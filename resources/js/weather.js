@@ -3,25 +3,52 @@
 let geoCoords = 'coords';
 
 
-//현재 위치 불러오기
+// 현재 위치 불러오기
 function handlePosition(position) {
     navigator.geolocation.getCurrentPosition(
 
-        function (position) {
+    function (position) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
             const coordsObj = {latitude : latitude, longitude : longitude};
 
             getAddress(coordsObj);
             
-            // console.log(coordsObj);
-
     },function (position){
         alert('위치 정보를 불러오는데 실패했습니다.')
     });
 }
 
 handlePosition();
+
+
+
+
+//위치 저장
+function saveCoods(coordsObj){
+    localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
+    /* localStorage.setItem로 저장하되, stringify를 이용해서 string으로 변환하는 JSON 인자를 실행 한다.*/
+
+    getAddress(coordsObj);
+}
+
+
+
+//위치 저장 확인
+function loadCoords() {
+    const loadedCords = localStorage.getItem(geoCoords);
+
+    let loadedCordsObject = {};
+    loadedCordsObject =  JSON.parse(loadedCords);
+
+    // 만약 loadedCord 가 null 이면
+    if(loadedCords === null) {
+        handlePosition();
+    } else {
+        getAddress(loadedCordsObject);
+       
+    }
+}
 
 
 
@@ -35,9 +62,9 @@ function getAddress(coordsObj){
     let loadedCordsObject = {};
     loadedCordsObject =  JSON.parse(loadedCords);
 
-    console.log(loadedCords);
+    // console.log(loadedCords);
 
-    let geoLocateUrl = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${loadedCordsObject.longitude}&y=${loadedCordsObject.latitude}`;
+    let geoLocateUrl = `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${loadedCordsObject.longitude}&y=${loadedCordsObject.latitude}&input_coord=WGS84`;
 
     $.ajax({
         url : geoLocateUrl,
@@ -46,15 +73,24 @@ function getAddress(coordsObj){
           'Authorization' : 'KakaoAK 2c9fafbd450c3523f216521256ccd060'
         },
         success : function(data) {
-          // console.log(data);
+        //   console.log(data);
         
 			const searchInfo = {
 				region_1depth_name : data.documents[0].address.region_1depth_name,
 				region_2depth_name : data.documents[0].address.region_2depth_name,
-				region_3depth_name : data.documents[0].address.region_3depth_name
+				address_name : data.documents[0].address.address_name
 			};
 
+			
+			let todayCity = document.querySelector('#todayCity');
+			todayCity.innerText = searchInfo.region_2depth_name;
+
         // cityName(searchInfo);
+		
+		// findRegid(data);
+		findRegid1(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
+		weekRegionSelect(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
+		addressToLocation(searchInfo.address_name);
 
         },
         error : function(e) {
@@ -62,7 +98,7 @@ function getAddress(coordsObj){
         }
       });
 
-      openCityName(loadedCordsObject);
+    //   openCityName(loadedCordsObject);
 
 }
 
@@ -92,52 +128,6 @@ getAddressJson("js/address.json", function(text){
 });
 
 
-
-/*
-
-// 주소 정보로 지역 이름 받아오는 함수
-function cityName(searchInfo){
-    // alert(searchInfo.region_3depth_name);
-    
-    let todayCity = document.querySelector('#todayCity');
-    let apiCity = searchInfo.region_3depth_name;
-    todayCity.innerText = apiCity;
-
-}
-*/
-
-//37.57326944444445, 126.97095555555556
-
-
-// 오늘 도시 이름(위도경도)
-function openCityName(loadedCordsObject){
-
-	$.ajax({
-		url : `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${loadedCordsObject.longitude}&y=${loadedCordsObject.latitude}&input_coord=WGS84`,
-		type : 'GET',
-		headers : {
-		'Authorization' : 'KakaoAK 2c9fafbd450c3523f216521256ccd060'
-		},
-		success : function(data) {
-			
-			let todayCity = document.querySelector('#todayCity');
-			let openCity = data.documents[0].address.region_3depth_name;
-			todayCity.innerText = openCity;
-			
-			// console.log(data);
-			
-			findRegid(data);
-
-		},
-		error : function(e) {
-			alert("주소를 불러오는데 실패했습니다");
-		}
-	});
-
-}
-
-
-  
 
 
 
@@ -355,7 +345,7 @@ function day2Weather(findCode){
 
 		// am 5 ~ am 11
 		if( 5 <= hours && hours <= 10 ){
-			console.log(data); 
+			// console.log(data); 
 			console.log("am 5 ~ am 10"); 
 
 			let todayTemMax = document.getElementById("todayTemMax");
@@ -445,7 +435,7 @@ function viewWeekWeather(findCode){
 	// 3~7일 기온
     let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
 
-	console.log(weekOpenTem);
+	// console.log(weekOpenTem);
 
 
     $.getJSON( weekOpenTem ,function(data){
@@ -478,9 +468,12 @@ function viewWeekWeather(findCode){
 
 
 
-		
 		let todayCity = document.querySelector('#todayCity');
-		todayCity.innerText = document.getElementById("address_detail3").value;
+		let todayCityVal = document.getElementById("address_detail3").value;
+
+		if(todayCityVal){
+			todayCity.innerText = todayCityVal;
+		}		
 		
     });
 
@@ -669,8 +662,6 @@ function searchWeather(nx, ny){
 
 	let todayOpenWeater = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${openKey}&numOfRows=30&dataType=json&base_date=${todayFormet}&base_time=${fcstBaseTime}&nx=${nx}&ny=${ny}`;
 
-	// !!!!!! base time 시간 계산 함수 필요
-
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&numOfRows=30&pageNo=1&dataType=json&base_date=20210928&base_time=0830&nx=61&ny=126
 
 
@@ -703,6 +694,7 @@ function searchWeather(nx, ny){
 				todayIcon.className = 'xi-cloudy';
 				todayWeather.innerText = '구름 많음';
 			}else{
+				todayIcon.className = 'xi-cloudy';
 				todayWeather.innerText = '흐림';
 			}
 
@@ -766,7 +758,7 @@ function todayTempMax(nx, ny){
 	
     $.getJSON( todayTempMax ,function(data){
 
-		console.log(data);
+		// console.log(data);
 		
 		let todayTemMax = document.getElementById("todayTemMax");
 		let temp = data.response.body.items.item[4].fcstValue;

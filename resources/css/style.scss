@@ -95,7 +95,7 @@ section{
   display: flex;
   color: $white;
   li:nth-child(1), li:nth-child(2){
-    flex: 1 0 0;
+    flex: auto;
     >strong{
       font-size: 4rem;
       font-weight: 600;
