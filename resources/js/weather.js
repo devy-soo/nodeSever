@@ -137,8 +137,6 @@ function openCityName(loadedCordsObject){
 }
 
 
-  
-
 
 
 // 오늘 regid(위도경도)
@@ -165,6 +163,7 @@ function findRegid(data){
 	}
 
 }
+
 
 
 
@@ -307,7 +306,6 @@ function day2Weather(findCode){
 
 
 
-		let temp0 = data.response.body.items.item[0].ta;
 		let temp1 = data.response.body.items.item[1].ta;
 		let temp2 = data.response.body.items.item[2].ta;
 		let temp3 = data.response.body.items.item[3].ta;
@@ -356,10 +354,9 @@ function day2Weather(findCode){
 
 		// am 5 ~ am 11
 		if( 5 <= hours && hours <= 10 ){
-			// console.log(data); 
+			console.log(data); 
 			console.log("am 5 ~ am 10"); 
 
-			let todayTemMin = document.getElementById("todayTemMin");
 			let todayTemMax = document.getElementById("todayTemMax");
 			
 			let temp5 = data.response.body.items.item[5].ta;
@@ -367,7 +364,6 @@ function day2Weather(findCode){
 			let water5 = data.response.body.items.item[5].rnYn;
 
 
-			todayTemMin.innerText = parseInt(temp0);
 			todayTemMax.innerText = parseInt(temp1);
 			weekMinTem1.innerText = parseInt(temp2);
 			weekMaxTem1.innerText = parseInt(temp3);
@@ -650,7 +646,12 @@ function changeRS(searchInfo){
 	searchWeather(rs.nx, rs.ny);
 
 	if( hours > 10 ){
-		todayTemp11(rs.nx, rs.ny);
+		todayTempMin(rs.nx, rs.ny);
+		todayTempMax(rs.nx, rs.ny);
+	}
+
+	if( hours >= 5 ){
+		todayTempMin(rs.nx, rs.ny);
 	}
 
 	// console.log(rs);
@@ -658,27 +659,32 @@ function changeRS(searchInfo){
 
 
 
+
+
 function searchWeather(nx, ny){
 	
 	// 현재 날씨
-	let todayOpenWeater = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
+	let fcstBaseTime = ('0' + (hours - 1) + '30').slice(-4);
+
+	let todayOpenWeater = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${openKey}&numOfRows=30&dataType=json&base_date=${todayFormet}&base_time=${fcstBaseTime}&nx=${nx}&ny=${ny}`;
 
 	// !!!!!! base time 시간 계산 함수 필요
 
-	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&dataType=json&base_date=20210927&base_time=0630&nx=55&ny=127
+	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&numOfRows=30&pageNo=1&dataType=json&base_date=20210928&base_time=0830&nx=61&ny=126
 
 
     $.getJSON( todayOpenWeater ,function(data){
 
 		// console.log(data);
+		// console.log(todayOpenWeater);
 
 		
 		let todayIcon = document.getElementById("todayIcon");
 		let todayWeather = document.getElementById("todayWeather");
 		let todayTemp = document.getElementById("todayTem");
 
-		let temp = data.response.body.items.item[0].fcstValue;
-		let sky = data.response.body.items.item[5].fcstValue;
+		let temp = data.response.body.items.item[24].fcstValue;
+		let sky = data.response.body.items.item[18].fcstValue;
 		let water = data.response.body.items.item[6].fcstValue;
 
 		// console.log(sky +"&"+ water);
@@ -723,19 +729,18 @@ function searchWeather(nx, ny){
 
 
 
-// 11시 이후 최저 최고 온도
-function todayTemp11(nx, ny){
+// 5시 이후 최저 온도
+function todayTempMin(nx, ny){
 	
 	// 현재 날씨
 	let todayTempMin = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=5&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
-	let todayTempMax = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=9&dataType=json&base_date=${todayFormet}&base_time=0800&nx=${nx}&ny=${ny}`;
 
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
 
 
     $.getJSON( todayTempMin ,function(data){
 
-		console.log(data);
+		// console.log(data);
 
 		let todayTemMin = document.getElementById("todayTemMin");
 		let temp = data.response.body.items.item[8].fcstValue;
@@ -745,8 +750,19 @@ function todayTemp11(nx, ny){
     });
 
 
-	
 
+}
+
+
+// 11시 이후 최고 온도
+function todayTempMax(nx, ny){
+	
+	// 현재 날씨
+	let todayTempMax = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=9&dataType=json&base_date=${todayFormet}&base_time=0800&nx=${nx}&ny=${ny}`;
+
+	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
+
+	
     $.getJSON( todayTempMax ,function(data){
 
 		console.log(data);
@@ -758,5 +774,9 @@ function todayTemp11(nx, ny){
 
     });
 }
+
+
+
+
 
 
