@@ -1,4 +1,5 @@
 /* ### 현재위치 ### */
+//진행 필요
 
 let geoCoords = 'coords';
 
