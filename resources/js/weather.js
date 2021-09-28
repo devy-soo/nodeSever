@@ -131,7 +131,7 @@ function openCityName(loadedCordsObject){
 
 		},
 		error : function(e) {
-			alert("주소를 불러오는데 실패했습니다");
+		alert("주소를 불러오는데 실패했습니다");
 		}
 	});
 
@@ -196,13 +196,10 @@ window.onload = function(){
 				
 			  findRegid1(addressName2, addressName3);
 			  weekRegionSelect(addressName2, addressName3);
-			  
-			  addressToLocation(addressName);
 			}
 		}).open();
 	});
 }
-
 
 
 
@@ -269,14 +266,6 @@ for(let i = 1; i < 7; i++){
 
 
 
-let todayDate = document.getElementById("todayDate");
-
-const today1 = new Date();
-today1.setDate(today1.getDate());
-let dayDate1 = ("0" + (1 + today1.getMonth())).slice(-2);
-let dayDate2 = ("0" + today1.getDate()).slice(-2);
-todayDate.innerText = `${dayDate1}월 ${dayDate2}일`;              
-
 
 
 
@@ -290,23 +279,21 @@ function day2Weather(findCode){
     $.getJSON( day2OpenTem ,function(data){
 
         // console.log(data);
-        // console.log(day2OpenTem);
 
 
-		// 최저최고
-		let weekMinTem1 = document.getElementById("dayMinTem1");
-		let weekMaxTem1 = document.getElementById("dayMaxTem1");
-		let weekMinTem2 = document.getElementById("dayMinTem2");
-		let weekMaxTem2 = document.getElementById("dayMaxTem2");
+		// am 5 ~ am 11
+		if( 5 <= hours && hours <= 11 ){
 
-		// 아이콘
-		let day1IconAm = document.getElementById("dayIcon2");
-		let day1IconPm = document.getElementById("dayIcon3");
-		let day2IconAm = document.getElementById("dayIcon4");
-		let day2IconPm = document.getElementById("dayIcon5");
+			let weekMinTem1 = document.getElementById("dayMinTem1");
+			weekMinTem1.innerText = parseInt(data.response.body.items.item[2].ta);
 
+			let weekMaxTem1 = document.getElementById("dayMaxTem1");
+			weekMaxTem1.innerText = parseInt(data.response.body.items.item[3].ta);
 
+			let weekMinTem2 = document.getElementById("dayMinTem2");
+			weekMinTem2.innerText = parseInt(data.response.body.items.item[4].ta);
 
+<<<<<<< HEAD
 		let temp1 = data.response.body.items.item[1].ta;
 		let temp2 = data.response.body.items.item[2].ta;
 		let temp3 = data.response.body.items.item[3].ta;
@@ -321,8 +308,16 @@ function day2Weather(findCode){
 		let water2 = data.response.body.items.item[2].rnYn;
 		let water3 = data.response.body.items.item[3].rnYn;
 		let water4 = data.response.body.items.item[4].rnYn;
+=======
+			let weekMaxTem2 = document.getElementById("dayMaxTem2");
+			weekMaxTem2.innerText = parseInt(data.response.body.items.item[5].ta);
+		}
+>>>>>>> parent of 32de660 (검색 후 구현 완료(오늘제외))
 
+		//  pm12 ~ 다음날 am 4
+		if( 5 > hours || hours > 11 ){
 
+<<<<<<< HEAD
 		//  ~ am 4
 		if( 5 > hours ){
 			// console.log(data);
@@ -351,8 +346,15 @@ function day2Weather(findCode){
 			dayIconSetting( day2IconAm, sky5, water5);
 			dayIconSetting( day2IconPm, sky6, water6);
 		}
+=======
+			let weekMinTem1 = document.getElementById("dayMinTem1");
+			weekMinTem1.innerText = parseInt(data.response.body.items.item[1].ta);
+>>>>>>> parent of 32de660 (검색 후 구현 완료(오늘제외))
 
+			let weekMaxTem1 = document.getElementById("dayMaxTem1");
+			weekMaxTem1.innerText = parseInt(data.response.body.items.item[2].ta);
 
+<<<<<<< HEAD
 		// am 5 ~ am 11
 		if( 5 <= hours && hours <= 10 ){
 			console.log(data); 
@@ -377,48 +379,52 @@ function day2Weather(findCode){
 			dayIconSetting( day2IconPm, sky5, water5);
 		}
 		
+=======
+			let weekMinTem2 = document.getElementById("dayMinTem2");
+			weekMinTem2.innerText = parseInt(data.response.body.items.item[3].ta);
+>>>>>>> parent of 32de660 (검색 후 구현 완료(오늘제외))
 
+			let weekMaxTem2 = document.getElementById("dayMaxTem2");
+			weekMaxTem2.innerText = parseInt(data.response.body.items.item[4].ta);
 
-		//  pm11
-		if( hours > 10 ){
-			console.log("pm11 ~ "); 
-			// console.log(data);
 			
-			weekMinTem1.innerText = parseInt(temp1);
-			weekMaxTem1.innerText = parseInt(temp2);
-			weekMinTem2.innerText = parseInt(temp3);
-			weekMaxTem2.innerText = parseInt(temp4);
+			// 2일 아이콘 진행중
+			let dayIcon1 = document.getElementById("dayIcon1");
+			let amDay2Water = data.response.body.items.item[1].rnYn;
+			let pmDay2Water = data.response.body.items.item[2].rnYn;
+			let amDay2Sky = data.response.body.items.item[1].wfCd;
+			let pmDay2Sky = data.response.body.items.item[2].wfCd;
 
-			dayIconSetting( day1IconAm, sky1, water1);
-			dayIconSetting( day1IconPm, sky2, water2);
-			dayIconSetting( day2IconAm, sky3, water3);
-			dayIconSetting( day2IconPm, sky4, water4);
-		}
-
-
-		// 1-2 날씨 아이콘
-		function dayIconSetting(dayIcon, sky, water){
-
-			if( water == 0 ){
-				if( sky == 'DB01'){
-					dayIcon.className = 'xi-sun-o';
+			
+			/*
+			if( amDay2Water == 0 && pmDay2Water == 0 ){
+				if( amDay2Sky ){
+					
 				}else{
-					dayIcon.className = 'xi-cloudy';
+
 				}
-	
-			}else if( water == 1 ||  water == 4 ){
-				dayIcon.className = 'xi-pouring';
-	
-			}else if( water == 3 ){
-				dayIcon.className = 'xi-snowy';
-				
+
+			}else if( amDay2Weadter != 0 && pmDay2Weadter != 0 ){
+				if( amDay2Weadter == pmDay2Weadter){
+					return amDay2Weadter;
+				}else{
+					if(amDay2Weadter == 2 || pmDay2Weadter == 2 || amDay2Weadter == 3 || pmDay2Weadter == 3){
+						return 2;
+					}else{
+						return 1;
+					}
+				}
 			}else{
-				dayIcon.className = 'xi-umbrella-o';
-	
-			}	
-			
+				if( amDay2Weadter == 0){
+					return pmDay2Weadter;
+				}else if( pmDay2Weadter == 0 ){
+					return amDay2Weadter;
+				}
+			}
+
+			*/
+
 		}
-		
 
 
 
@@ -426,10 +432,6 @@ function day2Weather(findCode){
 
 
 }
-
-
-
-
 
 
 
@@ -489,8 +491,6 @@ function viewWeekWeather(findCode){
 
 
 
-
-
 // 3-7 날씨 아이콘
 const weekIconRegionArr = [
 	{region: "서울", code: "11B00000"},
@@ -543,7 +543,7 @@ function weekRegionSelect(addressName2, addressName3){
 
     $.getJSON( weekOpenIcon ,function(data){
 
-		// console.log(data);
+		console.log(data);
 
 		let iconString3am = data.response.body.items.item[0].wf3Am
 		let iconString3pm = data.response.body.items.item[0].wf3Pm
@@ -596,6 +596,7 @@ function weekRegionSelect(addressName2, addressName3){
 
 
 
+<<<<<<< HEAD
 
 
 
@@ -781,3 +782,5 @@ function todayTempMax(nx, ny){
 
 
 
+=======
+>>>>>>> parent of 32de660 (검색 후 구현 완료(오늘제외))
