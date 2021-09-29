@@ -48,28 +48,29 @@ function handlePosition(position) {
     navigator.geolocation.getCurrentPosition(
 
     function (position) {
-            const latitude = position.coords.latitude;
-            const longitude = position.coords.longitude;
-            const coordsObj = {latitude : latitude, longitude : longitude};
+		const latitude = position.coords.latitude;
+		const longitude = position.coords.longitude;
+		const coordsObj = {latitude : latitude, longitude : longitude};
 
-            getAddress(coordsObj);
+		saveCoords(coordsObj);
+
             
     },function (position){
         alert('위치 정보 제공을 허용해주세요.\n위치 정보를 불러오는데 실패했습니다.')
     });
 }
 
-handlePosition();
 
 
 
 
 //위치 저장
-function saveCoods(coordsObj){
+function saveCoords(coordsObj){
     localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
     /* localStorage.setItem로 저장하되, stringify를 이용해서 string으로 변환하는 JSON 인자를 실행 한다.*/
 
     getAddress(coordsObj);
+	changeRS(coordsObj);
 }
 
 
@@ -86,9 +87,13 @@ function loadCoords() {
         handlePosition();
     } else {
         getAddress(loadedCordsObject);
+		changeRS(loadedCordsObject);
        
     }
 }
+
+loadCoords();
+
 
 
 
@@ -125,9 +130,8 @@ function getAddress(coordsObj){
 			let todayCity = document.querySelector('#todayCity');
 			todayCity.innerText = searchInfo.region_2depth_name;
 
-		findRegid(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
-		weekRegionSelect(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
-		addressToLocation(searchInfo.address_name);
+			findRegid(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
+			weekIconSetting(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
 
         },
         error : function(e) {
@@ -191,11 +195,10 @@ window.onload = function(){
 				document.getElementById("address_detail").value = addressName; // 주소 넣기
 				document.getElementById("address_detail2").value = addressName2; // 주소 넣기 
 				document.getElementById("address_detail3").value = addressName3; // 주소 넣기 
-				// addressToLocation(addressName);
   
 				
 			  findRegid(addressName2, addressName3);
-			  weekRegionSelect(addressName2, addressName3);
+			  weekIconSetting(addressName2, addressName3);
 			  
 			  addressToLocation(addressName);
 			}
@@ -252,7 +255,7 @@ function findRegid(addressName2, addressName3){
 //  코드 변환 (일주일 날씨)
 function convertCode(findCode){
 
-	viewWeekWeather(findCode);
+	weekTempSetting(findCode);
 	day2Weather(findCode);
   
 }
@@ -260,11 +263,10 @@ function convertCode(findCode){
 
 
 
-
+// (0)1-2 기온, 날씨
 function day2Weather(findCode){
 	// let selectCodes = findCode[0].code;
 	
-	// 1-2 기온
     let day2OpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${findCode}`;
 
     $.getJSON( day2OpenTem ,function(data){
@@ -301,6 +303,31 @@ function day2Weather(findCode){
 		let water2 = data.response.body.items.item[2].rnYn;
 		let water3 = data.response.body.items.item[3].rnYn;
 		let water4 = data.response.body.items.item[4].rnYn;
+
+
+		// 1-2 날씨 아이콘
+		function dayIconSetting(dayIcon, sky, water){
+
+			if( water == 0 ){
+				if( sky == 'DB01'){
+					dayIcon.className = 'xi-sun-o';
+				}else{
+					dayIcon.className = 'xi-cloudy';
+				}
+	
+			}else if( water == 1 ||  water == 4 ){
+				dayIcon.className = 'xi-pouring';
+	
+			}else if( water == 3 ){
+				dayIcon.className = 'xi-snowy';
+				
+			}else{
+				dayIcon.className = 'xi-umbrella-o';
+	
+			}	
+			
+		}
+
 
 
 		//  ~ am 4
@@ -359,9 +386,9 @@ function day2Weather(findCode){
 		
 
 
-		//  pm11
+		//  am11
 		if( hours > 10 ){
-			console.log("pm11 ~ "); 
+			console.log("am11 ~ "); 
 			// console.log(data);
 			
 			weekMinTem1.innerText = parseInt(temp1);
@@ -375,32 +402,7 @@ function day2Weather(findCode){
 			dayIconSetting( day2IconPm, sky4, water4);
 		}
 
-
-		// 1-2 날씨 아이콘
-		function dayIconSetting(dayIcon, sky, water){
-
-			if( water == 0 ){
-				if( sky == 'DB01'){
-					dayIcon.className = 'xi-sun-o';
-				}else{
-					dayIcon.className = 'xi-cloudy';
-				}
-	
-			}else if( water == 1 ||  water == 4 ){
-				dayIcon.className = 'xi-pouring';
-	
-			}else if( water == 3 ){
-				dayIcon.className = 'xi-snowy';
-				
-			}else{
-				dayIcon.className = 'xi-umbrella-o';
-	
-			}	
-			
-		}
 		
-
-
 
     });
 
@@ -418,14 +420,12 @@ function day2Weather(findCode){
 
 
 // 중기 예보 3-7일  (일주일 기온)
-function viewWeekWeather(findCode){
-
-	// let selectCodes = findCode[0].code;
+function weekTempSetting(findCode){
 
 	// 3~7일 기온
     let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${findCode}&tmFc=${openDate}`;
 
-	console.log(weekOpenTem);
+	// console.log(weekOpenTem);
 
 
     $.getJSON( weekOpenTem ,function(data){
@@ -495,7 +495,8 @@ const weekIconRegionArr = [
 ];
 
 
-function weekRegionSelect(addressName2, addressName3){
+// 3~7 날씨
+function weekIconSetting(addressName2, addressName3){
 
 	let weekRegionCode;
 
@@ -518,7 +519,6 @@ function weekRegionSelect(addressName2, addressName3){
 
 
 
-	// 3~7 아이콘
 	let weekOpenIcon = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=${openKey}&pageNo=1&numOfRows=10&dataType=json&regId=${weekRegionCode}&tmFc=${openDate}`;
 
 	// http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=10&dataType=JSON&regId=11B00000&tmFc=202109230600
@@ -624,14 +624,12 @@ function addressToLocation(addressName){
 
 // dfs_xy_conv(code, v1, v2);
 function changeRS(searchInfo){
-	let latitude = searchInfo.latitude,
-	longitude = searchInfo.longitude;
-	let rs = dfs_xy_conv("toXY",latitude,longitude);
+	
+	let rs = dfs_xy_conv("toXY", searchInfo.latitude, searchInfo.longitude);
 	// 위도/경도 -> 기상청 좌표x / 좌표 y 변환
-	searchWeather(rs.nx, rs.ny);
+	nowWeather(rs.nx, rs.ny);
 
 	if( hours > 10 ){
-		todayTempMin(rs.nx, rs.ny);
 		todayTempMax(rs.nx, rs.ny);
 	}
 
@@ -645,10 +643,10 @@ function changeRS(searchInfo){
 
 
 
-
-function searchWeather(nx, ny){
+// 현재 기온, 날씨
+function nowWeather(nx, ny){
 	
-	// 현재 날씨
+	
 	let fcstBaseTime = ('0' + (hours - 1) + '30').slice(-4);
 
 	let todayOpenWeater = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${openKey}&numOfRows=30&dataType=json&base_date=${todayFormet}&base_time=${fcstBaseTime}&nx=${nx}&ny=${ny}`;
