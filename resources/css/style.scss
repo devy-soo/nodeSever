@@ -51,7 +51,7 @@ h1{
 }
 
 section{
-    max-width: 700px;
+    max-width: 650px;
     @include margin_center(90%);
 
     >div{margin-bottom:3rem}
@@ -130,8 +130,71 @@ section{
       }
     }
     dd{
-      font-size: 0.9rem;
       font-weight: 600;
     }
   }
+}
+
+
+
+@media screen and (max-width:717px) {
+	html{font-size: 13px;}
+	.today_icon_wrap{
+		font-size: 9rem;
+	}
+	h1{font-size: 1.2rem; margin-bottom:0.5rem}
+	.today_weather_wrap {
+		display: block;
+		li:nth-child(1){
+			strong{
+				font-size: 1.4rem;
+				font-weight: 500;
+				opacity: 0.7;
+				margin-top: 1rem;
+				margin-bottom: 0.5rem;
+				display: block;
+			}
+			p{display: none;}
+		}
+	}
+	.table_like{
+		display: block;
+		dl{
+			flex: none;
+			display: inline-flex;
+			align-items: center;
+			justify-content: space-evenly;
+			padding: 0.8rem 1.5rem;
+			dt{
+				font-weight: 600;
+				opacity: 0.6;
+			}
+			dd{
+				display:flex;
+				align-items: center;
+				div{
+					margin: 0 0.7rem;
+					i{
+						margin: 0;
+					}
+				}
+				p{
+					font-size: 1.3rem;
+				}
+			}
+		}
+	}
+	section{
+		div{margin-bottom: 1rem;}
+		div:last-child{margin-bottom: 0;}
+	}
+
+
+	@media screen and (max-height: 667px) {
+		h1 {font-size:1.05rem;}
+		.today_icon_wrap {font-size:6rem;}
+		.today_weather_wrap li:nth-child(2)>strong{font-size: 2.5rem;}
+	}
+	
+
 }

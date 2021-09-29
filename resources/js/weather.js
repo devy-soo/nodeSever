@@ -657,7 +657,7 @@ function nowWeather(nx, ny){
     $.getJSON( todayOpenWeater ,function(data){
 
 		// console.log(data);
-		// console.log(todayOpenWeater);
+		console.log(todayOpenWeater);
 
 		
 		let todayIcon = document.getElementById("todayIcon");
@@ -762,5 +762,11 @@ function todayTempMax(nx, ny){
 
 
 
+  
 
+function inputExist(){
+	let inputValEx = document.getElementById("address_detail").value; 
+	let inputValExist = (inputValEx) ? "있음" : "없음";
+	console.log(inputValExist);
+}
 
