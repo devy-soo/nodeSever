@@ -1,3 +1,43 @@
+// 날짜
+const today = new Date();
+let hours = today.getHours(); 
+
+
+// 오늘 날짜
+let todayDate = document.getElementById("todayDate");
+
+const today1 = new Date();
+today1.setDate(today1.getDate());
+let dayDate1 = ("0" + (1 + today1.getMonth())).slice(-2);
+let dayDate2 = ("0" + today1.getDate()).slice(-2);
+todayDate.innerText = `${dayDate1}월 ${dayDate2}일`;   
+
+
+
+// 일주일 날짜
+for(let i = 1; i < 7; i++){
+	const dayStandard = new Date();
+
+	dayStandard.setDate(today.getDate() + i);
+	let month = ("0" + (1 + dayStandard.getMonth())).slice(-2);
+	let day = ("0" + dayStandard.getDate()).slice(-2);
+
+	let dayDate = document.getElementById("dayDate" + i);
+	dayDate.innerText = month + "/" + day;                          
+}
+
+
+
+// open api key
+const openKey = 'lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D';
+let todayFormet = today.toISOString().substring(0,10).replace(/-/g,''); //yyyymmdd
+let openDate = todayFormet + '0600';
+
+
+
+
+
+
 /* ### 현재위치 ### */
 
 let geoCoords = 'coords';
@@ -15,7 +55,7 @@ function handlePosition(position) {
             getAddress(coordsObj);
             
     },function (position){
-        alert('위치 정보를 불러오는데 실패했습니다.')
+        alert('위치 정보 제공을 허용해주세요.\n위치 정보를 불러오는데 실패했습니다.')
     });
 }
 
@@ -85,10 +125,7 @@ function getAddress(coordsObj){
 			let todayCity = document.querySelector('#todayCity');
 			todayCity.innerText = searchInfo.region_2depth_name;
 
-        // cityName(searchInfo);
-		
-		// findRegid(data);
-		findRegid1(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
+		findRegid(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
 		weekRegionSelect(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
 		addressToLocation(searchInfo.address_name);
 
@@ -98,7 +135,6 @@ function getAddress(coordsObj){
         }
       });
 
-    //   openCityName(loadedCordsObject);
 
 }
 
@@ -131,32 +167,6 @@ getAddressJson("js/address.json", function(text){
 
 
 
-// 오늘 regid(위도경도)
-
-function findRegid(data){
-
-	let regDepth1 = data.documents[0].address.region_1depth_name;
-	let regDepth2 = data.documents[0].address.region_2depth_name;
-	let regDepth3 = data.documents[0].address.region_3depth_name;
-
-	// 서울, 인천, 부산, 울산, 대구, 광주, 대전, 세종, 제주
-	const exception1 = ['서울', '인천', '부산', '울산', '대구', '광주', '대전', '세종특별자치시', '제주시']; 
-
-	if( exception1.indexOf(regDepth1) > -1 ){
-
-		let exceptionIndexNum = exception1.indexOf(regDepth1);
-		const exceptionName = ['서울', '인천', '부산', '울산', '대구', '광주', '대전', '세종', '제주'];
-
-		let regName = exceptionName[exceptionIndexNum];
-		convertCode(regName);
-		
-	}else if(regDepth2){
-
-	}
-
-}
-
-
 
 
 
@@ -173,7 +183,7 @@ window.onload = function(){
 		//카카오 지도 발생
 		new daum.Postcode({
 			oncomplete: function(data) { //선택시 입력값 세팅
-				console.log(data);
+				// console.log(data);
 				let addressName = data.query;
 				let addressName2 = data.sido;
 				let addressName3 = data.sigungu;
@@ -184,7 +194,7 @@ window.onload = function(){
 				// addressToLocation(addressName);
   
 				
-			  findRegid1(addressName2, addressName3);
+			  findRegid(addressName2, addressName3);
 			  weekRegionSelect(addressName2, addressName3);
 			  
 			  addressToLocation(addressName);
@@ -197,36 +207,50 @@ window.onload = function(){
 
 
 // address.json과 주소 검색 비교 > 지역 코드 반환 (일주일날씨)
-function findRegid1(addressName2, addressName3){
+function findRegid(addressName2, addressName3){
 
 	// console.log(`sido:${addressName2}, sigungu:${addressName3}`);
 
 	for (let i in jsonData) { 
 
 		let regionName = jsonData[i].region;
+		let findCode;
 
-		if(addressName2.match(regionName)){
-			return convertCode(regionName);
+		if(addressName2.match('광주')){
+			findCode = '11F20501'
+			return convertCode(findCode);
+
+		}else if(addressName3.match('광주')){
+			findCode = '11B20702'
+			return convertCode(findCode);
+
+		}else if(addressName3.match('고성')){
+			if(addressName2.match('강원')){ 
+				findCode = '11D20402'
+				return convertCode(findCode); 
+			}
+			if(addressName2.match('경남')){ 
+				findCode = '11H20404'
+				return convertCode(findCode); 
+			}
+
+		}else if(addressName2.match(regionName)){
+			findCode = jsonData.filter(it => it.region.includes(regionName));
+			return convertCode(findCode[0].code);
 
 		}else if(addressName3.match(regionName)){
-			return convertCode(regionName);
+			findCode = jsonData.filter(it => it.region.includes(regionName));
+			return convertCode(findCode[0].code);
 		}
 
 	}
-	
-	// 광주, 고성 예외처리 필요
 
 }
   
 
 
 //  코드 변환 (일주일 날씨)
-function convertCode(regionName){
-
-	let findCode = jsonData.filter(it => it.region.includes(regionName));
-
-	// console.log(findCode);
-	// console.log(findCode[0].code);
+function convertCode(findCode){
 
 	viewWeekWeather(findCode);
 	day2Weather(findCode);
@@ -234,48 +258,14 @@ function convertCode(regionName){
 }
 
 
-const openKey = 'lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D';
-
-
-
-const today = new Date();
-let todayFormet = today.toISOString().substring(0,10).replace(/-/g,''); //yyyymmdd
-let openDate = todayFormet + '0600';
-let hours = today.getHours(); 
-
-
-
-// 일주일 날짜
-for(let i = 1; i < 7; i++){
-	const dayStandard = new Date();
-
-	dayStandard.setDate(today.getDate() + i);
-	let month = ("0" + (1 + dayStandard.getMonth())).slice(-2);
-	let day = ("0" + dayStandard.getDate()).slice(-2);
-
-	let dayDate = document.getElementById("dayDate" + i);
-	dayDate.innerText = month + "/" + day;                          
-}
-
-
-
-let todayDate = document.getElementById("todayDate");
-
-const today1 = new Date();
-today1.setDate(today1.getDate());
-let dayDate1 = ("0" + (1 + today1.getMonth())).slice(-2);
-let dayDate2 = ("0" + today1.getDate()).slice(-2);
-todayDate.innerText = `${dayDate1}월 ${dayDate2}일`;              
-
-
 
 
 
 function day2Weather(findCode){
-	let selectCodes = findCode[0].code;
+	// let selectCodes = findCode[0].code;
 	
 	// 1-2 기온
-    let day2OpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${selectCodes}`;
+    let day2OpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${findCode}`;
 
     $.getJSON( day2OpenTem ,function(data){
 
@@ -430,12 +420,12 @@ function day2Weather(findCode){
 // 중기 예보 3-7일  (일주일 기온)
 function viewWeekWeather(findCode){
 
-	let selectCodes = findCode[0].code;
+	// let selectCodes = findCode[0].code;
 
 	// 3~7일 기온
-    let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${selectCodes}&tmFc=${openDate}`;
+    let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${findCode}&tmFc=${openDate}`;
 
-	// console.log(weekOpenTem);
+	console.log(weekOpenTem);
 
 
     $.getJSON( weekOpenTem ,function(data){
@@ -533,6 +523,7 @@ function weekRegionSelect(addressName2, addressName3){
 
 	// http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=10&dataType=JSON&regId=11B00000&tmFc=202109230600
 
+	// console.log(weekOpenIcon);
 
     $.getJSON( weekOpenIcon ,function(data){
 
@@ -730,6 +721,7 @@ function todayTempMin(nx, ny){
 
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
 
+	// console.log(todayTempMin);
 
     $.getJSON( todayTempMin ,function(data){
 
@@ -754,7 +746,8 @@ function todayTempMax(nx, ny){
 	let todayTempMax = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=9&dataType=json&base_date=${todayFormet}&base_time=0800&nx=${nx}&ny=${ny}`;
 
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
-
+	
+	// console.log(todayTempMax);
 	
     $.getJSON( todayTempMax ,function(data){
 
