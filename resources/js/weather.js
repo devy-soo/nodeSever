@@ -760,13 +760,17 @@ function todayTempMax(nx, ny){
 }
 
 
-
-
+/*
+const refresh = document.getElementById("refresh");
   
 
 function inputExist(){
 	let inputValEx = document.getElementById("address_detail").value; 
-	let inputValExist = (inputValEx) ? "있음" : "없음";
-	console.log(inputValExist);
+	(inputValEx) ? "있음" : loadCoords();
 }
 
+
+refresh.addEventListener('click', () => {
+	inputExist();
+});
+*/
