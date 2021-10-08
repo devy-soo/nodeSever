@@ -91,20 +91,32 @@ section{
 
 
 .today_weather_wrap{
-  margin-bottom: 2rem;
-  display: flex;
-  color: $white;
-  li:nth-child(1), li:nth-child(2){
-    flex: auto;
-    >strong{
-      font-size: 4rem;
-      font-weight: 600;
-    }
-    >p{
-        font-size: 1.5rem;
-        margin-top: 1rem;
-    }
-  }
+	margin-bottom: 2rem;
+	display: flex;
+	color: $white;
+	li:nth-child(1), li:nth-child(2){
+		flex: auto;
+		position: relative;
+			>strong{
+				font-size: 4rem;
+				font-weight: 600;
+			}
+			>p{
+				font-size: 1.5rem;
+				margin-top: 1rem;
+			}
+			i{
+				font-size: 1.5rem;
+				position: absolute;
+				top: 0rem;
+				opacity: 0.5;
+				cursor: pointer;
+				&:hover{
+					opacity: 1;
+					transition: 0.2s;
+				}
+			}
+	}
 }
 
 

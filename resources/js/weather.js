@@ -6,11 +6,11 @@ let hours = today.getHours();
 // 오늘 날짜
 let todayDate = document.getElementById("todayDate");
 
-const today1 = new Date();
-today1.setDate(today1.getDate());
-let dayDate1 = ("0" + (1 + today1.getMonth())).slice(-2);
-let dayDate2 = ("0" + today1.getDate()).slice(-2);
-todayDate.innerText = `${dayDate1}월 ${dayDate2}일`;   
+const todayStandard = new Date();
+todayStandard.setDate(todayStandard.getDate());
+let todayMonth = ("0" + (1 + todayStandard.getMonth())).slice(-2);
+let todayDay = ("0" + todayStandard.getDate()).slice(-2);
+todayDate.innerText = `${todayMonth}월 ${todayDay}일`;   
 
 
 
@@ -36,72 +36,89 @@ let openDate = todayFormet + '0600';
 
 
 
+// 기상청 지역 구분(small region json)
+function getAddressJson(file, callback) {
+	let jsonFile = new XMLHttpRequest();
+	jsonFile.overrideMimeType("application/json");
+	jsonFile.open("GET", file, true);
+	jsonFile.onreadystatechange = function() {
+		if (jsonFile.readyState === 4 && jsonFile.status == "200") {
+			callback(jsonFile.responseText);
+		}
+	}
+	jsonFile.send(null);
+}
+  
+var jsonData;
 
-
-/* ### 현재위치 ### */
+getAddressJson("js/address.json", function(text){
+	jsonData = JSON.parse(text);
+	// console.log(jsonData);
+	// console.log(data[0].region);
+  
+});
+  
 
 let geoCoords = 'coords';
-
-
-// 현재 위치 불러오기
-function handlePosition(position) {
-    navigator.geolocation.getCurrentPosition(
-
-    function (position) {
-		const latitude = position.coords.latitude;
-		const longitude = position.coords.longitude;
-		const coordsObj = {latitude : latitude, longitude : longitude};
-
-		saveCoords(coordsObj);
-
-            
-    },function (position){
-        alert('위치 정보 제공을 허용해주세요.\n위치 정보를 불러오는데 실패했습니다.')
-    });
-}
-
-
-
-
-
-//위치 저장
-function saveCoords(coordsObj){
-    localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
-    /* localStorage.setItem로 저장하되, stringify를 이용해서 string으로 변환하는 JSON 인자를 실행 한다.*/
-
-    getAddress(coordsObj);
-	changeRS(coordsObj);
-}
-
-
-
-//위치 저장 확인
-function loadCoords() {
-    const loadedCords = localStorage.getItem(geoCoords);
-
-    let loadedCordsObject = {};
-    loadedCordsObject =  JSON.parse(loadedCords);
-
-    // 만약 loadedCord 가 null 이면
-    if(loadedCords === null) {
-        handlePosition();
-    } else {
-        getAddress(loadedCordsObject);
-		changeRS(loadedCordsObject);
-       
-    }
-}
-
 loadCoords();
 
 
 
 
+/* ### 현재위치 ### */
+// 위치 요청 허락
+function handleGeoAccept(position) {
+	
+	const latitude = position.coords.latitude;
+	const longitude = position.coords.longitude;
+	const coordsObj = {latitude : latitude, longitude : longitude};
+
+	saveGeoToCoords(coordsObj);
+}
+
+
+
+// 위치 거절
+function handleGeoReject() { 
+	alert("위치 정보 제공을 허용해주세요.\n위치 정보를 불러오는데 실패했습니다.");
+}
+
+//위치 저장
+function saveGeoToCoords(coordsObj){
+    localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
+}
+
+// 사용자 위치 요청 (수락, 거절)
+function askForCoords() { 
+	navigator.geolocation.getCurrentPosition(handleGeoAccept, handleGeoReject);
+}
+
+
+
+
+//위치 
+function loadCoords() {
+    const loadedCords = localStorage.getItem(geoCoords);
+
+    let loadedCordsObject = {};
+    loadedCordsObject =  JSON.parse(loadedCords);
+	
+    // 만약 loadedCord 가 null 이면
+    if(loadedCords === null) {
+        askForCoords()
+    }
+	else{
+		coordsToAddress();
+		loadWeatherByCoords(loadedCordsObject);
+	}
+
+}
+
+
 
 /// 현재 좌표값으로 주소 알아내기
-function getAddress(coordsObj){
+function coordsToAddress(){
 
-    localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
     const loadedCords = localStorage.getItem(geoCoords);
 
     let loadedCordsObject = {};
@@ -118,20 +135,15 @@ function getAddress(coordsObj){
           'Authorization' : 'KakaoAK 2c9fafbd450c3523f216521256ccd060'
         },
         success : function(data) {
-        //   console.log(data);
+          console.log(data);
         
-			const searchInfo = {
-				region_1depth_name : data.documents[0].address.region_1depth_name,
-				region_2depth_name : data.documents[0].address.region_2depth_name,
-				address_name : data.documents[0].address.address_name
+			const addressObj = {
+				address_name : data.documents[0].address.address_name,
+				addressName2 : data.documents[0].address.region_1depth_name,
+				addressName3 : data.documents[0].address.region_2depth_name
 			};
 
-			
-			let todayCity = document.querySelector('#todayCity');
-			todayCity.innerText = searchInfo.region_2depth_name;
-
-			findRegid(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
-			weekIconSetting(searchInfo.region_1depth_name, searchInfo.region_2depth_name);
+			loadWeatherByAddress(addressObj);
 
         },
         error : function(e) {
@@ -145,129 +157,56 @@ function getAddress(coordsObj){
 
 
 
-// address json
-function getAddressJson(file, callback) {
-  let jsonFile = new XMLHttpRequest();
-  jsonFile.overrideMimeType("application/json");
-  jsonFile.open("GET", file, true);
-  jsonFile.onreadystatechange = function() {
-      if (jsonFile.readyState === 4 && jsonFile.status == "200") {
-          callback(jsonFile.responseText);
-      }
-  }
-  jsonFile.send(null);
-}
-
-var jsonData;
-
-getAddressJson("js/address.json", function(text){
-	jsonData = JSON.parse(text);
-	// console.log(jsonData);
-//   console.log(data[0].region);
-
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* ### 검색 ### */
-
-// 주소 api 이용
-window.onload = function(){
-	document.getElementById("address_kakao").addEventListener("click", function(){ //주소입력칸을 클릭하면
-		//카카오 지도 발생
-		new daum.Postcode({
-			oncomplete: function(data) { //선택시 입력값 세팅
-				// console.log(data);
-				let addressName = data.query;
-				let addressName2 = data.sido;
-				let addressName3 = data.sigungu;
-  
-				document.getElementById("address_detail").value = addressName; // 주소 넣기
-				document.getElementById("address_detail2").value = addressName2; // 주소 넣기 
-				document.getElementById("address_detail3").value = addressName3; // 주소 넣기 
-  
-				
-			  findRegid(addressName2, addressName3);
-			  weekIconSetting(addressName2, addressName3);
-			  
-			  addressToLocation(addressName);
-			}
-		}).open();
-	});
-}
-
-
-
-
 // address.json과 주소 검색 비교 > 지역 코드 반환 (일주일날씨)
-function findRegid(addressName2, addressName3){
+function getRegionCode(addressName2, addressName3){
 
 	// console.log(`sido:${addressName2}, sigungu:${addressName3}`);
 
 	for (let i in jsonData) { 
 
 		let regionName = jsonData[i].region;
-		let findCode;
+		let regionCode;
 
 		if(addressName2.match('광주')){
-			findCode = '11F20501'
-			return convertCode(findCode);
+			regionCode = '11F20501'
+			return convertCode(regionCode);
 
 		}else if(addressName3.match('광주')){
-			findCode = '11B20702'
-			return convertCode(findCode);
+			regionCode = '11B20702'
+			return convertCode(regionCode);
 
 		}else if(addressName3.match('고성')){
 			if(addressName2.match('강원')){ 
-				findCode = '11D20402'
-				return convertCode(findCode); 
+				regionCode = '11D20402'
+				return convertCode(regionCode); 
 			}
 			if(addressName2.match('경남')){ 
-				findCode = '11H20404'
-				return convertCode(findCode); 
+				regionCode = '11H20404'
+				return convertCode(regionCode); 
 			}
 
 		}else if(addressName2.match(regionName)){
-			findCode = jsonData.filter(it => it.region.includes(regionName));
-			return convertCode(findCode[0].code);
+			regionJsonObj = jsonData.filter(it => it.region.includes(regionName));
+			return convertCode(regionJsonObj[0].code);
 
 		}else if(addressName3.match(regionName)){
-			findCode = jsonData.filter(it => it.region.includes(regionName));
-			return convertCode(findCode[0].code);
+			regionJsonObj = jsonData.filter(it => it.region.includes(regionName));
+			return convertCode(regionJsonObj[0].code);
 		}
 
 	}
 
 }
-  
 
-
-//  코드 변환 (일주일 날씨)
-function convertCode(findCode){
-
-	weekTempSetting(findCode);
-	day2Weather(findCode);
-  
-}
 
 
 
 
 // (0)1-2 기온, 날씨
-function day2Weather(findCode){
-	// let selectCodes = findCode[0].code;
+function twoDaysWeather(regionCode){
+	// let selectCodes = regionCode[0].code;
 	
-    let day2OpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${findCode}`;
+    let day2OpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${regionCode}`;
 
     $.getJSON( day2OpenTem ,function(data){
 
@@ -411,19 +350,11 @@ function day2Weather(findCode){
 
 
 
-
-
-
-
-
-
-
-
 // 중기 예보 3-7일  (일주일 기온)
-function weekTempSetting(findCode){
+function weekTempSetting(regionCode){
 
 	// 3~7일 기온
-    let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${findCode}&tmFc=${openDate}`;
+    let weekOpenTem = `https://cors.bridged.cc/http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${regionCode}&tmFc=${openDate}`;
 
 	// console.log(weekOpenTem);
 
@@ -456,14 +387,6 @@ function weekTempSetting(findCode){
 		let weekMinTem6 = document.getElementById("dayMinTem6");
 		weekMinTem6.innerText = parseInt(data.response.body.items.item[0].taMin6);
 
-
-
-		let todayCity = document.querySelector('#todayCity');
-		let todayCityVal = document.getElementById("address_detail3").value;
-
-		if(todayCityVal){
-			todayCity.innerText = todayCityVal;
-		}		
 		
     });
 
@@ -472,9 +395,7 @@ function weekTempSetting(findCode){
 
 
 
-
-
-// 3-7 날씨 아이콘
+// 3-7 날씨 지역 코드
 const weekIconRegionArr = [
 	{region: "서울", code: "11B00000"},
 	{region: "인천", code: "11B00000"},
@@ -493,6 +414,7 @@ const weekIconRegionArr = [
 	{region: "경남", code: "11H20000"},
 	{region: "제주특별자치도", code: "11G00000"}
 ];
+
 
 
 // 3~7 날씨
@@ -580,13 +502,42 @@ function weekIconSetting(addressName2, addressName3){
 
 
 
+/* ### 검색 ### */
+// 주소 api 이용
+document.getElementById("address_kakao").addEventListener("click", function(){ //주소입력칸을 클릭하면
+	//카카오 지도 발생
+	new daum.Postcode({
+		oncomplete: function(data) { //선택시 입력값 세팅
+			// console.log(data);
+			
+			const addressObj = {
+				addressName : data.query,
+				addressName2 : data.sido,
+				addressName3 : data.sigungu
+			};
+
+			document.getElementById("address_detail").value = addressObj.addressName;
+			document.getElementById("address_detail2").value = addressObj.addressName2; 
+			document.getElementById("address_detail3").value = addressObj.addressName3;
+			
+			
+			loadWeatherByAddress(addressObj);
+
+			addressToCoords(addressObj.addressName);
+			
+			let getAddressName = addressToCoords(addressObj.addressName);
+			console.log(getAddressName); // latitude, longitude
+
+			
+			// addressToCoords(addressName, loadWeatherByCoords);
+		}
+	}).open();
+});
 
 
 
-/* 오늘 날씨  */
-
-// 주소로 주소 정보 가져오기
-function addressToLocation(addressName){
+// 주소로 위도경도 정보 가져오기
+function addressToCoords(addressName /*, callback*/){
     
     let loca = `https://dapi.kakao.com/v2/local/search/address.json?query=${addressName}`;
 
@@ -596,6 +547,7 @@ function addressToLocation(addressName){
         headers : {
           'Authorization' : 'KakaoAK 2c9fafbd450c3523f216521256ccd060'
         },
+		// async:false,
         success : function(data) {
         //   console.log(data);
             // console.log(data.documents[0].x + "와" + data.documents[0].y);
@@ -609,7 +561,10 @@ function addressToLocation(addressName){
                 longitude : addressX
             };
             
-            changeRS(searchInfo);
+			// return getSerchLocaion = searchInfo;
+            loadWeatherByCoords(searchInfo);
+
+			// callback(searchInfo);
 
         },
         error : function(e) {
@@ -617,30 +572,42 @@ function addressToLocation(addressName){
         }
       });
 
-
+	//   return getSerchLocaion;
 }
 
 
 
+//  코드 변환 (일주일 날씨)
+function convertCode(regionCode){
+
+	weekTempSetting(regionCode);
+	twoDaysWeather(regionCode);
+  
+}
+
+
+
+
+
+
+/* 오늘 날씨  */
 // dfs_xy_conv(code, v1, v2);
-function changeRS(searchInfo){
+function modifyCoordsByGrid(searchInfo){
 	
-	let rs = dfs_xy_conv("toXY", searchInfo.latitude, searchInfo.longitude);
+	let roArray = changeCode("toXY", searchInfo.latitude, searchInfo.longitude);
 	// 위도/경도 -> 기상청 좌표x / 좌표 y 변환
-	nowWeather(rs.nx, rs.ny);
+	nowWeather(roArray.nx, roArray.ny);
 
 	if( hours > 10 ){
-		todayTempMax(rs.nx, rs.ny);
+		todayTempMax(roArray.nx, roArray.ny);
 	}
 
 	if( hours >= 5 ){
-		todayTempMin(rs.nx, rs.ny);
+		todayTempMin(roArray.nx, roArray.ny);
 	}
 
-	// console.log(rs);
+	// console.log(roArray);
 }
-
-
 
 
 // 현재 기온, 날씨
@@ -710,7 +677,6 @@ function nowWeather(nx, ny){
 
 
 
-
 // 5시 이후 최저 온도
 function todayTempMin(nx, ny){
 	
@@ -760,17 +726,28 @@ function todayTempMax(nx, ny){
 }
 
 
-/*
-const refresh = document.getElementById("refresh");
-  
 
-function inputExist(){
-	let inputValEx = document.getElementById("address_detail").value; 
-	(inputValEx) ? "있음" : loadCoords();
+
+
+
+// xi-my-location 클릭시 현재 위치 새로 저장
+document.querySelector(".xi-my-location").addEventListener("click", function(){ 
+	// loadWeatherByCoords();
+	loadCoords();
+});
+
+
+
+function loadWeatherByAddress(addressObj){
+	let todayCity = document.querySelector('#todayCity');
+	todayCity.innerText = addressObj.addressName3;
+
+	getRegionCode(addressObj.addressName2, addressObj.addressName3);
+	weekIconSetting(addressObj.addressName2, addressObj.addressName3);
 }
 
 
-refresh.addEventListener('click', () => {
-	inputExist();
-});
-*/
+function loadWeatherByCoords(searchInfo){
+	modifyCoordsByGrid(searchInfo);
+}
+
