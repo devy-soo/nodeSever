@@ -2,29 +2,42 @@
 const today = new Date();
 let hours = today.getHours(); 
 
-
-// 오늘 날짜
-let todayDate = document.getElementById("todayDate");
-
-const todayStandard = new Date();
-todayStandard.setDate(todayStandard.getDate());
-let todayMonth = ("0" + (1 + todayStandard.getMonth())).slice(-2);
-let todayDay = ("0" + todayStandard.getDate()).slice(-2);
-todayDate.innerText = `${todayMonth}월 ${todayDay}일`;   
+setWeekDate();
+setTodayDate();
 
 
 
-// 일주일 날짜
-for(let i = 1; i < 7; i++){
-	const dayStandard = new Date();
+function getDate(num){
+	
+	const today = new Date();
+	today.setDate(today.getDate() + num);
+	let month = ("0" + (1 + today.getMonth())).slice(-2);
+	let day = ("0" + today.getDate()).slice(-2);
 
-	dayStandard.setDate(today.getDate() + i);
-	let month = ("0" + (1 + dayStandard.getMonth())).slice(-2);
-	let day = ("0" + dayStandard.getDate()).slice(-2);
-
-	let dayDate = document.getElementById("dayDate" + i);
-	dayDate.innerText = month + "/" + day;                          
+	const date = `${month}/${day}`;
+	return date;
 }
+
+function setWeekDate(){
+	for(let i = 1; i < 7; i++){
+		let dayDate = document.getElementById(`dayDate${i}`);
+		let weekDate = getDate(i);
+		dayDate.innerText = weekDate;
+	}
+}
+
+function setTodayDate(){
+	
+	let todayDate = document.getElementById("todayDate");
+	var today = getDate(0).split('/');
+	todayDate.innerText = `${today[0]}월 ${today[1]}일`;   
+}
+
+
+
+
+
+
 
 
 
@@ -153,6 +166,35 @@ function coordsToAddress(){
 
 
 }
+
+
+
+
+// 카카오 fetch  
+// !!!!!!했다 예에
+/*
+var myHeaders = new Headers();
+
+var myInit = { method: 'GET',
+               headers: myHeaders,
+			   headers : {
+				 'Authorization' : 'KakaoAK 2c9fafbd450c3523f216521256ccd060'
+			   },
+               cache: 'default' };
+
+
+const loadedCords = localStorage.getItem(geoCoords);
+let loadedCordsObject = {};
+loadedCordsObject =  JSON.parse(loadedCords);
+
+var myRequest = new Request( `https://dapi.kakao.com/v2/local/geo/coord2address.json?x=${loadedCordsObject.longitude}&y=${loadedCordsObject.latitude}&input_coord=WGS84` , myInit);
+
+fetch(myRequest).then(response => response.json())
+.then(json => {
+    console.log(1);
+    console.log(json);
+});
+*/
 
 
 
