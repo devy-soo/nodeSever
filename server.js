@@ -1,61 +1,51 @@
-const express = require('express')    // node_modules 에 있는 express 관련 파일을 가져온다.
-const app = express()    // express 는 함수이므로, 반환값을 변수에 저장한다.
+const express = require('express')
+const app=express()
 
+app.set('views',__dirname+'/views')
+app.set('view engine','ejs')
+app.engine('html', require('ejs').renderFile)
 
-// 3000 포트로 서버 오픈
-app.listen(8080, function() {
-    console.log("start! express app on port 8080")
+app.use('/js', express.static('resources/js'))
+app.use('/css', express.static('resources/css'))
+
+// 3030 포트로 서버 오픈
+app.listen(3030, function() {
+    console.log("start! express app on port 3030")
 })
 
 
-app.get('/', function(req,res) {
-  res.sendFile(__dirname + "/resources/index.html")
+app.get("/", (req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "*")
+    // 위 두 줄을 추가해주면 CORS 를 허용하게 됩니다.
+    next();
 })
 
-// localhost:8080/main 브라우저에 res.sendFile() 내부의 파일이 띄워진다.
-app.get('/index', function(req,res) {
-  res.sendFile(__dirname + "/resources/index.html")
+
+
+
+function getDate(num){
+	
+	const today = new Date();
+	today.setDate(today.getDate() + num);
+	let month = ("0" + (1 + today.getMonth())).slice(-2);
+	let day = ("0" + today.getDate()).slice(-2);
+
+	const date = `${month}/${day}`;
+	return date;
+}
+
+function setWeekDate(){
+	for(let i = 1; i < 7; i++){
+		let dayDate = document.getElementById(`dayDate${i}`);
+		let weekDate = getDate(i);
+		console.log(i);
+		dayDate.innerText = weekDate;
+	}
+}
+
+
+app.get('/',(req,res)=>{
+    res.render('index',{name : getDate(0)})
 })
 
-// public 디렉토리를 static으로 기억한다.
-// public 내부의 파일들을 localhost:8080/파일명 으로 브라우저에서 불러올 수 있다.
-app.use(express.static('resources/'))
-
-
-
-app.get("/", (req, res) => {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "*")
-  // 위 두 줄을 추가해주면 CORS 를 허용하게 됩니다.
-
-})
-
-/*
-const cors = require ('cors');
-app.use(cors({
-    origin:['http://localhost:8080','http://127.0.0.1:8080'],
-    credentials:true
-}));
-
-app.use(function (req, res, next) {
-
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', '*');
-  res.header('Access-Control-Allow-Credentials', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-  next();
-});
-*/
-
-
-
-/*
-const cors = require('cors');
-const router = express.Router();
-
-router.get('/', cors(), (req, res) => { res.send('cors!') });
-*/
-
-
-// const cors = require('cors');
-// app.use(cors());

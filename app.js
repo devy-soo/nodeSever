@@ -1,7 +1,7 @@
 const http = require("http"); // 노드 모듈을 가져온다
 
 const hostname = "127.0.0.1" // 사용할 서버 호스트네임
-const port = 8080 // 사용할 서버 포트
+const port = 3030 // 사용할 서버 포트
 
 // 서버를 만든다
 const server = http.createServer((req, res) => {
