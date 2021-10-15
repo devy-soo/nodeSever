@@ -2,15 +2,9 @@ let geoCoords = 'coords';	// 좌표
 var jsonData;	// 기상청 지역 구분(small region json)
 
 
-/* ### 현재위치 ### */
-// 위치 요청 허락
-function handleGeoAccept(position) {
-	const latitude = position.coords.latitude;
-	const longitude = position.coords.longitude;
-	const coordsObj = {latitude : latitude, longitude : longitude};
 
-	saveGeoToCoords(coordsObj);
-}
+
+/* ### 현재위치 ### */
 
 // 위치 거절
 function handleGeoReject() { 
@@ -18,13 +12,17 @@ function handleGeoReject() {
 }
 
 //위치 저장
-function saveGeoToCoords(coordsObj){
+function saveGeoToCoords(position){
+	const latitude = position.coords.latitude;
+	const longitude = position.coords.longitude;
+	const coordsObj = {latitude : latitude, longitude : longitude};
+	alert(coordsObj);
     localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
 }
 
 // 사용자 위치 요청 (수락, 거절)
 function askForCoords() { 
-	navigator.geolocation.getCurrentPosition(handleGeoAccept, handleGeoReject);
+	navigator.geolocation.getCurrentPosition(saveGeoToCoords, handleGeoReject);
 }
 
 //위치 
@@ -39,55 +37,25 @@ function getLoadCoords() {
 }
 
 
-// small region
-function getAddressJson(file, callback) {
-	let jsonFile = new XMLHttpRequest();
-	jsonFile.overrideMimeType("application/json");
-	jsonFile.open("GET", file, true);
-	jsonFile.onreadystatechange = function() {
-		if (jsonFile.readyState === 4 && jsonFile.status == "200") {
-			callback(jsonFile.responseText);
-		}
-	}
-	jsonFile.send(null);
-}
-  
-getAddressJson("js/smallRegion.json", function(text){
-	jsonData = JSON.parse(text);
-});
-
-
 
 
 
 
 /* ### 검색 ### */
-// 주소 api 이용
 const searchAddress = () => {
-	// return new Promise((resolve) => {
-	// document.getElementById("address_kakao").addEventListener("click", function(){ //주소입력칸을 클릭하면
-		
-		//카카오 지도 발생
+	return new Promise(function(resolve, reject) {
 		new daum.Postcode({
 			oncomplete: function(data) { //선택시 입력값 세팅
-				// console.log(data);
-				
 				const addressObj = {
 					addressName : data.query,
 					addressName2 : data.sido,
 					addressName3 : data.sigungu
 				};
-
-				getLocationInfoByAddress(addressObj);
-				// addressToCoords(addressObj.addressName);
+				resolve(addressObj);
 			}
 		}).open();
-
-	// }); 
-	// }); 
+	});
 }
-
-// searchAddress();
 
 
 
@@ -105,7 +73,7 @@ function getLocationInfoByAddress(addr){
 			headers : {'Authorization' : 'KakaoAK 2c9fafbd450c3523f216521256ccd060'},
 			cache: 'default' 
 		};
-
+                    
 		let myRequest = new Request(loca , myInit);
 		
 		let todayCity = document.querySelector('#todayCity');
@@ -118,25 +86,19 @@ function getLocationInfoByAddress(addr){
 				latitude : parseFloat(data.documents[0].y).toFixed(7),
 				longitude : parseFloat(data.documents[0].x).toFixed(7)
 			};
-			addressObj = {
-				address_name : data.documents[0].road_address.address_name,
-				addressName2 : data.documents[0].road_address.region_1depth_name,
-				addressName3 : data.documents[0].road_address.region_2depth_name
-			};
-			let smallCode = getSigunRegionCode(addressObj);
-			let largeCode = getSidoRegionCode(addressObj);
+
+			let smallCode = getSigunRegionCode(addr);
+			let largeCode = getSidoRegionCode(addr);
+
 			let getAddressByCoords = {
 				xy : modifyCoordsByGrid(searchInfo), 
 				smallRegion: smallCode,  
 				largeRegion: largeCode
 			};
-			console.log(getAddressByCoords);
 			return getAddressByCoords;
-		}).then(addressObj => {
-			
-			setWeather(addressObj);
-			// return getAddressByCoords;
 
+		}).then(addressObj => {
+			setWeather(addressObj);
 		}).catch(function(err){
 			// reject(err)
 			console.log(err)
@@ -169,26 +131,24 @@ let getLocationInfoByCoords = (coords) =>{
 
 		fetch(myRequest).then(response => response.json())
 		.then(addressObj => {
+			// console.log(addressObj);
 			addressObj = {
 				address_name : addressObj.documents[0].address.address_name,
 				addressName2 : addressObj.documents[0].address.region_1depth_name,
 				addressName3 : addressObj.documents[0].address.region_2depth_name
 			};
+			let smallCode = getSigunRegionCode(addressObj);
+			let largeCode = getSidoRegionCode(addressObj);
+
+			let getAddressByCoords = {
+				xy : modifyCoordsByGrid(coords), 
+				smallRegion: smallCode,  
+				largeRegion: largeCode
+			};
+			resolve(getAddressByCoords);
 
 			let todayCity = document.querySelector('#todayCity');
 			todayCity.innerText = addressObj.addressName3;
-
-			return addressObj;
-
-		}).then((addressObj) => {
-				let smallCode = getSigunRegionCode(addressObj);
-				let largeCode = getSidoRegionCode(addressObj);
-				let getAddressByCoords = {
-					xy : modifyCoordsByGrid(coords), 
-					smallRegion: smallCode,  
-					largeRegion: largeCode
-				};
-				resolve(getAddressByCoords);
 
 		}).catch(function(err){
 			reject(err)
@@ -212,7 +172,27 @@ function modifyCoordsByGrid(searchInfo){
 
 
 
-// address.json과 주소 검색 비교 > 지역 코드 반환 (일주일날씨)
+
+// small region
+function getAddressJson(file, callback) {
+	let jsonFile = new XMLHttpRequest();
+	jsonFile.overrideMimeType("application/json");
+	jsonFile.open("GET", file, true);
+	jsonFile.onreadystatechange = function() {
+		if (jsonFile.readyState === 4 && jsonFile.status == "200") {
+			callback(jsonFile.responseText);
+		}
+	}
+	jsonFile.send(null);
+}
+  
+getAddressJson("js/smallRegion.json", function(text){
+	jsonData = JSON.parse(text);
+});
+
+
+
+// big region, address.json과 주소 검색 비교 > 지역 코드 반환 (일주일날씨)
 function getSigunRegionCode(addressName){
 	// console.log(`sido:${addressName2}, sigungu:${addressName3}`);
 	let addressName2 = addressName.addressName2;
@@ -226,7 +206,6 @@ function getSigunRegionCode(addressName){
 			return '11F20501';
 		}else if(addressName3.match('광주')){
 			return '11B20702';
-
 		}else if(addressName3.match('고성')){
 			if(addressName2.match('강원')){ 
 				return '11D20402';
@@ -234,7 +213,6 @@ function getSigunRegionCode(addressName){
 			if(addressName2.match('경남')){ 
 				return '11F20501';
 			}
-
 		}else if(addressName2.match(regionName)){
 			regionJsonObj = jsonData.filter(it => it.region.includes(regionName));
 			return regionJsonObj[0].code;
