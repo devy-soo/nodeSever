@@ -34,7 +34,7 @@ function setWeekDate(){
 function setTodayDate(){
 	
 	let todayDate = document.getElementById("todayDate");
-	var today = getDate(0).split('/');
+	let today = getDate(0).split('/');
 	todayDate.innerText = `${today[0]}월 ${today[1]}일`;   
 }
 
@@ -64,8 +64,7 @@ function twoDaysWeather(regionCode){
 		let day2IconAm = document.getElementById("dayIcon4");
 		let day2IconPm = document.getElementById("dayIcon5");
 
-
-
+		
 		let temp1 = data.response.body.items.item[1].ta;
 		let temp2 = data.response.body.items.item[2].ta;
 		let temp3 = data.response.body.items.item[3].ta;
@@ -136,13 +135,11 @@ function twoDaysWeather(regionCode){
 		if( 5 <= hours && hours <= 10 ){
 			// console.log(data); 
 			// console.log("am 5 ~ am 10"); 
-
 			let todayTemMax = document.getElementById("todayTemMax");
 			
 			let temp5 = data.response.body.items.item[5].ta;
 			let sky5 = data.response.body.items.item[5].wfCd;
 			let water5 = data.response.body.items.item[5].rnYn;
-
 
 			todayTemMax.innerText = parseInt(temp1);
 			weekMinTem1.innerText = parseInt(temp2);
@@ -157,12 +154,10 @@ function twoDaysWeather(regionCode){
 		}
 		
 
-
 		//  am11
 		if( hours > 10 ){
 			// console.log("am11 ~ "); 
 			// console.log(data);
-			
 			weekMinTem1.innerText = parseInt(temp1);
 			weekMaxTem1.innerText = parseInt(temp2);
 			weekMinTem2.innerText = parseInt(temp3);
@@ -174,11 +169,7 @@ function twoDaysWeather(regionCode){
 			dayIconSetting( day2IconPm, sky4, water4);
 		}
 
-		
-
     });
-
-
 }
 
 
@@ -188,39 +179,28 @@ function weekTempSetting(regionCode){
 
 	// 3~7일 기온
     let weekOpenTem = `http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${regionCode}&tmFc=${openDate}`;
-
 	// console.log(weekOpenTem);
 
 
     $.getJSON( weekOpenTem ,function(data){
         // console.log(data);
-		
 		let weekMaxTem3 = document.getElementById("dayMaxTem3");
-		weekMaxTem3.innerText = parseInt(data.response.body.items.item[0].taMax3);
-
 		let weekMaxTem4 = document.getElementById("dayMaxTem4");
-		weekMaxTem4.innerText = parseInt(data.response.body.items.item[0].taMax4);
-
 		let weekMaxTem5 = document.getElementById("dayMaxTem5");
-		weekMaxTem5.innerText = parseInt(data.response.body.items.item[0].taMax5);
-
 		let weekMaxTem6 = document.getElementById("dayMaxTem6");
-		weekMaxTem6.innerText = parseInt(data.response.body.items.item[0].taMax6);
-
-
 		let weekMinTem3 = document.getElementById("dayMinTem3");
-		weekMinTem3.innerText = parseInt(data.response.body.items.item[0].taMin3);
-
 		let weekMinTem4 = document.getElementById("dayMinTem4");
-		weekMinTem4.innerText = parseInt(data.response.body.items.item[0].taMin4);
-
 		let weekMinTem5 = document.getElementById("dayMinTem5");
-		weekMinTem5.innerText = parseInt(data.response.body.items.item[0].taMin5);
-
 		let weekMinTem6 = document.getElementById("dayMinTem6");
-		weekMinTem6.innerText = parseInt(data.response.body.items.item[0].taMin6);
 
-		
+		weekMaxTem3.innerText = parseInt(data.response.body.items.item[0].taMax3);
+		weekMaxTem4.innerText = parseInt(data.response.body.items.item[0].taMax4);
+		weekMaxTem5.innerText = parseInt(data.response.body.items.item[0].taMax5);
+		weekMaxTem6.innerText = parseInt(data.response.body.items.item[0].taMax6);
+		weekMinTem3.innerText = parseInt(data.response.body.items.item[0].taMin3);
+		weekMinTem4.innerText = parseInt(data.response.body.items.item[0].taMin4);
+		weekMinTem5.innerText = parseInt(data.response.body.items.item[0].taMin5);
+		weekMinTem6.innerText = parseInt(data.response.body.items.item[0].taMin6);
     });
 
 
@@ -351,9 +331,7 @@ function todayTempMin(nx, ny){
 	
 	// 현재 날씨
 	let todayTempMin = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=5&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
-
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
-
 	// console.log(todayTempMin);
 
     $.getJSON( todayTempMin ,function(data){
@@ -388,13 +366,12 @@ function todayTempMax(nx, ny){
 
 // xi-my-location 클릭시 현재 위치 새로 저장
 document.querySelector(".xi-my-location").addEventListener("click", function(){ 
-	// loadWeatherByCoords();
 	getLoadCoords();
 });
 
 
 
-
+// 좌표로 날씨 처리하기
 getLocationInfoByCoords(getLoadCoords())
 	.then((locationInfo) => {
 		setWeather(locationInfo)
@@ -403,21 +380,20 @@ getLocationInfoByCoords(getLoadCoords())
 	})
 
 
-	
+// 주소검색으로 날씨 처리하기
 let btn = document.getElementById("address_kakao");
-btn.addEventListener("click", searchAddress);
-
-// getLocationInfoByAddress(searchAddress)
-// 	.then((locationInfo) => {
-// 		console.log(locationInfo);
-// 		return getLocitionInfoByAddress(locationInfo)
-// 	}).then((locationInfo) => {
-// 		setWeather(locationInfo)
-// 	}).catch((error) => {
-// 		console.log(error);
-// 	})
+btn.addEventListener("click", function(){
+	searchAddress()
+		.then((addressObj) => {
+			getLocationInfoByAddress(addressObj);
+		}).catch((error) => {
+			console.log(error);
+		})
+});
 
 
+
+// 날씨 가져오기
 function setWeather(locationInfo){
 	let nx = locationInfo.xy.nx;
 	let ny = locationInfo.xy.ny;
@@ -432,12 +408,3 @@ function setWeather(locationInfo){
 	twoDaysWeather(smallRegion);
 }
 	
-
-
-// function loadWeatherByAddress(addressObj){
-// 	let todayCity = document.querySelector('#todayCity');
-// 	todayCity.innerText = addressObj.addressName3;
-
-// 	getSigunRegionCode(addressObj.addressName2, addressObj.addressName3);
-// 	weekIconSetting(addressObj.addressName2, addressObj.addressName3);
-// }
