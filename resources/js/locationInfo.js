@@ -22,7 +22,10 @@ function saveGeoToCoords(position){
 
 // 사용자 위치 요청 (수락, 거절)
 function askForCoords() { 
-	navigator.geolocation.getCurrentPosition(saveGeoToCoords, handleGeoReject);
+	// navigator.geolocation.getCurrentPosition(saveGeoToCoords, handleGeoReject);
+
+	let id = navigator.geolocation.watchPosition(saveGeoToCoords, handleGeoReject); 
+	navigator.geolocation.clearWatch(id);
 }
 
 //위치 

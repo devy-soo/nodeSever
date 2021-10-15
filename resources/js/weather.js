@@ -366,7 +366,7 @@ function todayTempMax(nx, ny){
 
 // xi-my-location 클릭시 현재 위치 새로 저장
 document.querySelector(".xi-my-location").addEventListener("click", function(){ 
-	saveGeoToCoords();
+	getLoadCoords();
 });
 
 
