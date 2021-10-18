@@ -172,8 +172,6 @@ function twoDaysWeather(regionCode){
     });
 }
 
-
-
 // 중기 예보 3-7일  (일주일 기온)
 function weekTempSetting(regionCode){
 

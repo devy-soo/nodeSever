@@ -13,19 +13,20 @@ function handleGeoReject() {
 
 //위치 저장
 function saveGeoToCoords(position){
+	console.log(position);
 	const latitude = position.coords.latitude;
 	const longitude = position.coords.longitude;
 	const coordsObj = {latitude : latitude, longitude : longitude};
-	alert(coordsObj);
+	console.log(coordsObj);
     localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
 }
 
 // 사용자 위치 요청 (수락, 거절)
 function askForCoords() { 
-	// navigator.geolocation.getCurrentPosition(saveGeoToCoords, handleGeoReject);
+	navigator.geolocation.getCurrentPosition(saveGeoToCoords, handleGeoReject);
 
-	let id = navigator.geolocation.watchPosition(saveGeoToCoords, handleGeoReject); 
-	navigator.geolocation.clearWatch(id);
+	// let id = navigator.geolocation.watchPosition(saveGeoToCoords, handleGeoReject); 
+	// navigator.geolocation.clearWatch(id);
 }
 
 //위치 
