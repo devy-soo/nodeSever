@@ -5,29 +5,6 @@ var jsonData;	// 기상청 지역 구분(small region json)
 
 
 /* ### 현재위치 ### */
-
-// 위치 거절
-function handleGeoReject() { 
-	alert("위치 정보 제공을 허용해주세요.\n위치 정보를 불러오는데 실패했습니다.");
-}
-
-//위치 저장
-function saveGeoToCoords(position){
-	const latitude = position.coords.latitude;
-	const longitude = position.coords.longitude;
-	const coordsObj = {latitude : latitude, longitude : longitude};
-	alert(coordsObj);
-    localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
-}
-
-// 사용자 위치 요청 (수락, 거절)
-function askForCoords() { 
-	// navigator.geolocation.getCurrentPosition(saveGeoToCoords, handleGeoReject);
-
-	let id = navigator.geolocation.watchPosition(saveGeoToCoords, handleGeoReject); 
-	navigator.geolocation.clearWatch(id);
-}
-
 //위치 
 function getLoadCoords() {
 	const loadedCords = localStorage.getItem(geoCoords);
@@ -40,20 +17,51 @@ function getLoadCoords() {
 }
 
 
+// 사용자 위치 요청 (수락, 거절)
+function askForCoords() { 
+	navigator.geolocation.getCurrentPosition(saveCoords, rejectCoords);
+
+	// let id = navigator.geolocation.watchPosition(saveCoords, rejectCoords); 
+	// navigator.geolocation.clearWatch(id);
+}
+
+// 위치 거절
+function rejectCoords() { 
+	alert("위치 정보 제공을 허용해주세요.\n위치 정보를 불러오는데 실패했습니다.");
+}
+
+//위치 저장
+function saveCoords(position){
+	const latitude = position.coords.latitude;
+	const longitude = position.coords.longitude;
+	const coordsObj = {latitude : latitude, longitude : longitude};
+	// alert(coordsObj);
+    localStorage.setItem(geoCoords, JSON.stringify(coordsObj));
+
+	history.go(0);
+}
+
+function clearCoords() {
+	localStorage.removeItem(geoCoords);
+	askForCoords();
+}
+
 
 
 
 
 /* ### 검색 ### */
-const searchAddress = () => {
-	return new Promise(function(resolve, reject) {
+const getSearchingAddress = () => {
+	return new Promise(function(resolve) {
 		new daum.Postcode({
 			oncomplete: function(data) { //선택시 입력값 세팅
 				const addressObj = {
 					addressName : data.query,
 					addressName2 : data.sido,
-					addressName3 : data.sigungu
+					addressName3 : data.sigungu,
+					addressName4 : data.bname
 				};
+				console.log(data);
 				resolve(addressObj);
 			}
 		}).open();
@@ -80,7 +88,7 @@ function getLocationInfoByAddress(addr){
 		let myRequest = new Request(loca , myInit);
 		
 		let todayCity = document.querySelector('#todayCity');
-		todayCity.innerText = addr.addressName3;
+		todayCity.innerText = addr.addressName4;
 
 		fetch(myRequest).then(response => response.json())
 		.then(data => {

@@ -45,12 +45,12 @@ function setTodayDate(){
 
 
 // (0)1-2 기온, 날씨
-function twoDaysWeather(regionCode){
+function setTwoDaysWeather(regionCode){
 	// let selectCodes = regionCode[0].code;
 	
-    let day2OpenTem = `http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${regionCode}`;
+    let apiUrl = `http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${regionCode}`;
 
-    $.getJSON( day2OpenTem ,function(data){
+    $.getJSON( apiUrl ,function(data){
 
 		// 최저최고
 		let weekMinTem1 = document.getElementById("dayMinTem1");
@@ -82,7 +82,7 @@ function twoDaysWeather(regionCode){
 
 
 		// 1-2 날씨 아이콘
-		function dayIconSetting(dayIcon, sky, water){
+		function setTwoDaysIcon(dayIcon, sky, water){
 
 			if( water == 0 ){
 				if( sky == 'DB01'){
@@ -124,10 +124,10 @@ function twoDaysWeather(regionCode){
 			weekMinTem2.innerText = parseInt(temp5);
 			weekMaxTem2.innerText = parseInt(temp6);
 
-			dayIconSetting( day1IconAm, sky3, water3);
-			dayIconSetting( day1IconPm, sky4, water4);
-			dayIconSetting( day2IconAm, sky5, water5);
-			dayIconSetting( day2IconPm, sky6, water6);
+			setTwoDaysIcon( day1IconAm, sky3, water3);
+			setTwoDaysIcon( day1IconPm, sky4, water4);
+			setTwoDaysIcon( day2IconAm, sky5, water5);
+			setTwoDaysIcon( day2IconPm, sky6, water6);
 		}
 
 
@@ -147,10 +147,10 @@ function twoDaysWeather(regionCode){
 			weekMinTem2.innerText = parseInt(temp4);
 			weekMaxTem2.innerText = parseInt(temp5);
 
-			dayIconSetting( day1IconAm, sky2, water2);
-			dayIconSetting( day1IconPm, sky3, water3);
-			dayIconSetting( day2IconAm, sky4, water4);
-			dayIconSetting( day2IconPm, sky5, water5);
+			setTwoDaysIcon( day1IconAm, sky2, water2);
+			setTwoDaysIcon( day1IconPm, sky3, water3);
+			setTwoDaysIcon( day2IconAm, sky4, water4);
+			setTwoDaysIcon( day2IconPm, sky5, water5);
 		}
 		
 
@@ -163,10 +163,10 @@ function twoDaysWeather(regionCode){
 			weekMinTem2.innerText = parseInt(temp3);
 			weekMaxTem2.innerText = parseInt(temp4);
 
-			dayIconSetting( day1IconAm, sky1, water1);
-			dayIconSetting( day1IconPm, sky2, water2);
-			dayIconSetting( day2IconAm, sky3, water3);
-			dayIconSetting( day2IconPm, sky4, water4);
+			setTwoDaysIcon( day1IconAm, sky1, water1);
+			setTwoDaysIcon( day1IconPm, sky2, water2);
+			setTwoDaysIcon( day2IconAm, sky3, water3);
+			setTwoDaysIcon( day2IconPm, sky4, water4);
 		}
 
     });
@@ -175,14 +175,14 @@ function twoDaysWeather(regionCode){
 
 
 // 중기 예보 3-7일  (일주일 기온)
-function weekTempSetting(regionCode){
+function setWeekTemp(regionCode){
 
 	// 3~7일 기온
-    let weekOpenTem = `http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${regionCode}&tmFc=${openDate}`;
+    let apiUrl = `http://apis.data.go.kr/1360000/MidFcstInfoService/getMidTa?serviceKey=${openKey}&dataType=json&regId=${regionCode}&tmFc=${openDate}`;
 	// console.log(weekOpenTem);
 
 
-    $.getJSON( weekOpenTem ,function(data){
+    $.getJSON( apiUrl ,function(data){
         // console.log(data);
 		let weekMaxTem3 = document.getElementById("dayMaxTem3");
 		let weekMaxTem4 = document.getElementById("dayMaxTem4");
@@ -208,11 +208,11 @@ function weekTempSetting(regionCode){
 
 
 // 3~7 날씨
-function weekIconSetting(regionCode){  
+function setWeekIcon(regionCode){  
 
-	let weekOpenIcon = `http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=${openKey}&pageNo=1&numOfRows=10&dataType=json&regId=${regionCode}&tmFc=${openDate}`;
+	let apiUrl = `http://apis.data.go.kr/1360000/MidFcstInfoService/getMidLandFcst?serviceKey=${openKey}&pageNo=1&numOfRows=10&dataType=json&regId=${regionCode}&tmFc=${openDate}`;
 
-    $.getJSON( weekOpenIcon ,function(data){
+    $.getJSON( apiUrl ,function(data){
 		// console.log(data);
 		let iconString3am = data.response.body.items.item[0].wf3Am
 		let iconString3pm = data.response.body.items.item[0].wf3Pm
@@ -264,15 +264,15 @@ function weekIconSetting(regionCode){
 
 /* 오늘 날씨  */
 // 현재 기온, 날씨
-function nowWeather(nx, ny){
+function setNowWeather(nx, ny){
 	
 	let fcstBaseTime = ('0' + (hours - 1) + '30').slice(-4);
-	let todayOpenWeater = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${openKey}&numOfRows=30&dataType=json&base_date=${todayFormet}&base_time=${fcstBaseTime}&nx=${nx}&ny=${ny}`;
+	let apiUrl = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=${openKey}&numOfRows=30&dataType=json&base_date=${todayFormet}&base_time=${fcstBaseTime}&nx=${nx}&ny=${ny}`;
 
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getUltraSrtFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&numOfRows=30&pageNo=1&dataType=json&base_date=20210928&base_time=0830&nx=61&ny=126
 
 
-    $.getJSON( todayOpenWeater ,function(data){
+    $.getJSON( apiUrl ,function(data){
 		// console.log(data);
 		// console.log(todayOpenWeater);
 
@@ -327,14 +327,14 @@ function nowWeather(nx, ny){
 
 
 // 5시 이후 최저 온도
-function todayTempMin(nx, ny){
+function setTodayTempMin(nx, ny){
 	
 	// 현재 날씨
-	let todayTempMin = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=5&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
+	let apiUrl = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=5&dataType=json&base_date=${todayFormet}&base_time=0200&nx=${nx}&ny=${ny}`;
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
-	// console.log(todayTempMin);
+	// console.log(setTodayTempMin);
 
-    $.getJSON( todayTempMin ,function(data){
+    $.getJSON( apiUrl ,function(data){
 		// console.log(data);
 
 		let todayTemMin = document.getElementById("todayTemMin");
@@ -346,13 +346,13 @@ function todayTempMin(nx, ny){
 
 
 // 11시 이후 최고 온도
-function todayTempMax(nx, ny){
+function setTodayTempMax(nx, ny){
 	
 	// 현재 날씨
-	let todayTempMax = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=9&dataType=json&base_date=${todayFormet}&base_time=0800&nx=${nx}&ny=${ny}`;
+	let apiUrl = `http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=${openKey}&pageNo=9&dataType=json&base_date=${todayFormet}&base_time=0800&nx=${nx}&ny=${ny}`;
 	// http://apis.data.go.kr/1360000/VilageFcstInfoService_2.0/getVilageFcst?serviceKey=lpu6mNTAPteBKDRE0JpHMQhMQ0LYNzQPiZIkU5OQB8%2B8gyF7m7gp5kahbMcZVUsv06NIkdh7dvX8vdCe35WLmQ%3D%3D&pageNo=1&numOfRows=50&dataType=json&base_date=20210927&base_time=0500&nx=55&ny=127
 	
-    $.getJSON( todayTempMax ,function(data){
+    $.getJSON( apiUrl ,function(data){
 		// console.log(data);
 		let todayTemMax = document.getElementById("todayTemMax");
 		let temp = data.response.body.items.item[4].fcstValue;
@@ -365,8 +365,9 @@ function todayTempMax(nx, ny){
 
 
 // xi-my-location 클릭시 현재 위치 새로 저장
-document.querySelector(".xi-my-location").addEventListener("click", function(){ 
-	getLoadCoords();
+let reloadCoords = document.querySelector(".xi-my-location");
+reloadCoords.addEventListener("click", function(){ 
+	clearCoords();
 });
 
 
@@ -383,7 +384,7 @@ getLocationInfoByCoords(getLoadCoords())
 // 주소검색으로 날씨 처리하기
 let btn = document.getElementById("address_kakao");
 btn.addEventListener("click", function(){
-	searchAddress()
+	getSearchingAddress()
 		.then((addressObj) => {
 			getLocationInfoByAddress(addressObj);
 		}).catch((error) => {
@@ -400,11 +401,11 @@ function setWeather(locationInfo){
 	let smallRegion = locationInfo.smallRegion;
 	let largeRegion = locationInfo.largeRegion;
 	
-	todayTempMax(nx, ny);
-	todayTempMin(nx, ny);
-	nowWeather(nx, ny);
-	weekIconSetting(largeRegion);
-	weekTempSetting(smallRegion);
-	twoDaysWeather(smallRegion);
+	setTodayTempMax(nx, ny);
+	setTodayTempMin(nx, ny);
+	setNowWeather(nx, ny);
+	setWeekIcon(largeRegion);
+	setWeekTemp(smallRegion);
+	setTwoDaysWeather(smallRegion);
 }
 	
