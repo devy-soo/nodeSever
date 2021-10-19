@@ -11,7 +11,7 @@
     //
     // LCC DFS 좌표변환 ( code : "toXY"(위경도->좌표, x:위도, y:경도), "toLL"(좌표->위경도,x:x, y:y) )
     //
-function changeCode(code, x, y) {
+ function changeCode(code, x, y) {
     const DEGRAD = Math.PI / 180.0;
     const RADDEG = 180.0 / Math.PI;
  

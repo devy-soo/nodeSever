@@ -365,8 +365,8 @@ function setTodayTempMax(nx, ny){
 
 
 // xi-my-location 클릭시 현재 위치 새로 저장
-let reloadCoords = document.querySelector(".xi-my-location");
-reloadCoords.addEventListener("click", function(){ 
+let reloadbtn = document.querySelector(".xi-my-location");
+reloadbtn.addEventListener("click", function(){ 
 	clearCoords();
 });
 
@@ -375,7 +375,8 @@ reloadCoords.addEventListener("click", function(){
 // 좌표로 날씨 처리하기
 getLocationInfoByCoords(getLoadCoords())
 	.then((locationInfo) => {
-		setWeather(locationInfo)
+		getTodayWeather(locationInfo)
+		getWeekWeather(locationInfo)
 	}).catch((error) => {
 		console.log(error);
 	})
@@ -395,17 +396,22 @@ btn.addEventListener("click", function(){
 
 
 // 날씨 가져오기
-function setWeather(locationInfo){
+function getTodayWeather(locationInfo){
 	let nx = locationInfo.xy.nx;
 	let ny = locationInfo.xy.ny;
-	let smallRegion = locationInfo.smallRegion;
-	let largeRegion = locationInfo.largeRegion;
 	
 	setTodayTempMax(nx, ny);
 	setTodayTempMin(nx, ny);
 	setNowWeather(nx, ny);
+}
+
+
+function getWeekWeather(locationInfo){
+	let smallRegion = locationInfo.smallRegion;
+	let largeRegion = locationInfo.largeRegion;
+
 	setWeekIcon(largeRegion);
 	setWeekTemp(smallRegion);
 	setTwoDaysWeather(smallRegion);
-}
+};
 	
