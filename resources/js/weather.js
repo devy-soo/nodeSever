@@ -51,6 +51,7 @@ function setTwoDaysWeather(regionCode){
     let apiUrl = `http://apis.data.go.kr/1360000/VilageFcstMsgService/getLandFcst?serviceKey=${openKey}&dataType=json&regId=${regionCode}`;
 
     $.getJSON( apiUrl ,function(data){
+		console.log(data);
 
 		// 최저최고
 		let weekMinTem1 = document.getElementById("dayMinTem1");
