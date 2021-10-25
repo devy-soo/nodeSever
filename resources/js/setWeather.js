@@ -38,7 +38,7 @@ function getWeekWeather(locationInfo){
 
 function setNowWeather(data){
 	let array = data.split(',');
-	console.log(array);
+	// console.log(array);
 
 	document.getElementById('todayIcon').className = array[0];
 	document.getElementById('todayWeather').innerText = array[1];
@@ -48,7 +48,7 @@ function setNowWeather(data){
 
 function setTodayTemp(data){
 	let array = data.split(',');
-	console.log(array);
+	// console.log(array);
 
 	document.getElementById('todayTemMin').innerText = parseInt(array[0]);
 	document.getElementById('todayTemMax').innerText = parseInt(array[1]);
@@ -59,7 +59,7 @@ function setTodayTemp(data){
 
 function setWeekSky(data){
 	let array = data.split(',');
-	console.log(array);
+	// console.log(array);
 
 	document.getElementById('dayIcon2').className = array[0];
 	document.getElementById('dayIcon3').className = array[1];
@@ -81,7 +81,7 @@ function setWeekSky(data){
 
 function setWeekTemp(data){
 	let array = data.split(',');
-	console.log(array);
+	// console.log(array);
 
 	document.getElementById('dayMinTem1').innerText = array[0];
 	document.getElementById('dayMaxTem1').innerText = array[1];

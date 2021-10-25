@@ -8,43 +8,6 @@ let todayFormet = today.toLocaleString().substring(0,13).replace(/\s|\./g,''); /
 // let todayFormet = today.toISOString().substring(0,13).replace(/-/g,''); //yyyymmdd
 let openDate = todayFormet + '0600';
 
-setWeekDate();
-setTodayDate();
-
-
-function getDate(num){
-	
-	const today = new Date();
-	today.setDate(today.getDate() + num);
-	let month = ("0" + (1 + today.getMonth())).slice(-2);
-	let day = ("0" + today.getDate()).slice(-2);
-
-	const date = `${month}/${day}`;
-	return date;
-}
-
-function setWeekDate(){
-	for(let i = 1; i < 7; i++){
-		let dayDate = document.getElementById(`dayDate${i}`);
-		let weekDate = getDate(i);
-		dayDate.innerText = weekDate;
-	}
-}
-
-function setTodayDate(){
-	
-	let todayDate = document.getElementById("todayDate");
-	let today = getDate(0).split('/');
-	todayDate.innerText = `${today[0]}월 ${today[1]}일`;   
-}
-
-
-
-
-
-
-
-
 
 
 /* 일주일 날씨 */
@@ -59,6 +22,8 @@ async function getWeekTemp(smallRegion){
 		console.log(error);
 	}
 }
+
+
 
 
 // 1~2 최고최저 온도
@@ -372,8 +337,8 @@ async function getTodayTemp(regionCode, nx, ny){
 			let todayMaxTemp = await getTodayTemp3(nx, ny);
 			todayTempArr = `${todayMinTemp},${todayMaxTemp}`;
 		}else{
-			let todayMinTemp = await getTodayTemp1(regionCode);
-			let todayMaxTemp = await getTodayTemp2(nx, ny);
+			let todayMinTemp = await getTodayTemp2(nx, ny);
+			let todayMaxTemp = await getTodayTemp1(regionCode);
 			todayTempArr = `${todayMinTemp},${todayMaxTemp}`;
 		}
 
@@ -391,18 +356,18 @@ function getTodayTemp1(regionCode){
 	
 	return new Promise(function(resolve) {
 		$.getJSON( apiUrl ,function(data){
-			if(11 <= hours < 17){
+			if(11 <= hours && hours < 17){
 				todayTemMax = data.response.body.items.item[0].ta;
 				resolve(todayTemMax);
-			}else if( 5 <= hours < 11 ){
+			}else if( 5 <= hours && hours < 11 ){
 				todayTemMax = data.response.body.items.item[1].ta;
 				resolve(todayTemMax);
-			}else if( hours < 5 ){
+			}else if( 5 < hours ){
 				todayTemMin = data.response.body.items.item[1].ta;
 				todayTemMax = data.response.body.items.item[2].ta;
 				let todayTemp = [todayTemMin, todayTemMax]
 				resolve(todayTemp)
-	}
+			}
 		});
 	});
 
@@ -444,28 +409,5 @@ function getTodayTemp3(nx, ny){
 let reloadbtn = document.querySelector(".xi-my-location");
 reloadbtn.addEventListener("click", function(){ 
 	clearCoords();
-});
-
-
-
-// 좌표로 날씨 처리하기
-getLocationInfoByCoords(getLoadCoords())
-	.then((locationInfo) => {
-		getTodayWeather(locationInfo)
-		getWeekWeather(locationInfo)
-	}).catch((error) => {
-		console.log(error);
-	})
-
-
-// 주소검색으로 날씨 처리하기
-let btn = document.getElementById("address_kakao");
-btn.addEventListener("click", function(){
-	getSearchingAddress()
-		.then((addressObj) => {
-			getLocationInfoByAddress(addressObj);
-		}).catch((error) => {
-			console.log(error);
-		})
 });
 

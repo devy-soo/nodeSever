@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>weather node server</title>
+    <title>weather</title>
     <meta name="description" content="weather">
 
     <link rel="stylesheet" href="css/normalize.css">
@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="css/style.min.css">
 
     <!-- jquery ui  -->
-     <script src="js/jquery-3.5.1.min.js"></script>
-     <script src="js/jquery-ui.min.js"></script>
+     <!-- <script src="js/jquery-3.5.1.min.js"></script> -->
+
 
     <!-- xeicon -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
@@ -135,25 +135,27 @@
 
 
     <div class="search_box">
-      <input type="hidden" placeholder="지역 검색" id="address_detail">
-      <input type="hidden" placeholder="지역 검색" id="address_detail2">
-      <input type="hidden" placeholder="지역 검색" id="address_detail3">
       <input type="button" value="지역 변경" id="address_kakao">
     </div>
 
 
   </section>
 
-    <!-- 카카오 주소 검색 -->
-    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
-    <!-- 기상청 격자 변경 -->
-    <script src="js/modifyCoordsByGrid.js"></script>  
-    <!-- 위치정보 -->
-    <script src="js/locationInfomation.js"></script>  
+    <!-- 지역 정보 -->
+    <!-- <script src="js/locationCodes.js"></script>   -->
+    <!-- 좌표로 날씨정보 -->
+    <!-- <script src="js/locaInfoByGeo.js"></script>   -->
+    <!-- 검색으로 날씨정보 -->
+    <!-- <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="js/locaInfoByAddrName.js"></script>   -->
     <!-- 날씨 -->
-    <script src="js/getWeather.js"></script>
-    <script src="js/setWeather.js"></script>
-    <!-- <script src="js/weather.js"></script> -->
+    <!-- <script src="js/getWeather.js"></script>
+    <script src="js/setWeather.js"></script> -->
+    <!-- 날짜 -->
+    <!-- <script src="js/date.js"></script> -->
+
+    
+    <script src="js/lib/require.js" data-main="app"></script>
 
 </body>
 
