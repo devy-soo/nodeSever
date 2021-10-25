@@ -10,19 +10,16 @@ requirejs.config ({
       "locaInfoByAddrName": "locaInfoByAddrName",
       "getWeather": "getWeather",
       "setWeather": "setWeather",
+      "locationSearch": "https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2",
       "date": "date",
    }
 });
 
 
-//to start the application, load the main module from app folder
-requirejs(["js/lib/main"]);
 
-require([ 
-     'modules/isJquery', // 함수 반환
-     'modules/isJqueryVersion' // jQuery 버전 반환 
-  ], 
-  // 콜백 함수의 인자값은 배열인자에 설정된 것을 차례대로 받는다. 
-  function ( isJquery, isJqueryVersion ) { 
-     console.log(isJquery(), isJqueryVersion); 
-  });
+require(['locationCodes', 'jquery'],() => {
+    require(['locaInfoByGeo', 'locaInfoByAddrName', 'locationSearch', 'getWeather', 'setWeather'], function () {
+        require(['getWeather', 'setWeather'], () => {});
+    });
+});
+
