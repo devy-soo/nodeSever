@@ -281,3 +281,24 @@ function getSidoRegionCode(addressName){
 
 
 
+
+// 좌표로 날씨 처리하기
+getLocationInfoByCoords(getLoadCoords())
+	.then((locationInfo) => {
+		getTodayWeather(locationInfo)
+		getWeekWeather(locationInfo)
+	}).catch((error) => {
+		console.log(error);
+	})
+
+
+// 주소검색으로 날씨 처리하기
+let btn = document.getElementById("address_kakao");
+btn.addEventListener("click", function(){
+	getSearchingAddress()
+		.then((addressObj) => {
+			getLocationInfoByAddress(addressObj);
+		}).catch((error) => {
+			console.log(error);
+		})
+});

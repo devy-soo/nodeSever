@@ -24,6 +24,8 @@ async function getWeekTemp(smallRegion){
 }
 
 
+
+
 // 1~2 최고최저 온도
 function getTwoDaysTemp(regionCode){
 
@@ -407,28 +409,5 @@ function getTodayTemp3(nx, ny){
 let reloadbtn = document.querySelector(".xi-my-location");
 reloadbtn.addEventListener("click", function(){ 
 	clearCoords();
-});
-
-
-
-// 좌표로 날씨 처리하기
-getLocationInfoByCoords(getLoadCoords())
-	.then((locationInfo) => {
-		getTodayWeather(locationInfo)
-		getWeekWeather(locationInfo)
-	}).catch((error) => {
-		console.log(error);
-	})
-
-
-// 주소검색으로 날씨 처리하기
-let btn = document.getElementById("address_kakao");
-btn.addEventListener("click", function(){
-	getSearchingAddress()
-		.then((addressObj) => {
-			getLocationInfoByAddress(addressObj);
-		}).catch((error) => {
-			console.log(error);
-		})
 });
 

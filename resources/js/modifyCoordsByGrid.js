@@ -1,16 +1,15 @@
 // LCC DFS 좌표변환을 위한 기초 자료
-    //
-    const RE = 6371.00877; // 지구 반경(km)
-    const GRID = 5.0; // 격자 간격(km)
-    const SLAT1 = 30.0; // 투영 위도1(degree)
-    const SLAT2 = 60.0; // 투영 위도2(degree)
-    const OLON = 126.0; // 기준점 경도(degree)
-    const OLAT = 38.0; // 기준점 위도(degree)
-    const XO = 43; // 기준점 X좌표(GRID)
-    const YO = 136; // 기1준점 Y좌표(GRID)
-    //
-    // LCC DFS 좌표변환 ( code : "toXY"(위경도->좌표, x:위도, y:경도), "toLL"(좌표->위경도,x:x, y:y) )
-    //
+const RE = 6371.00877; // 지구 반경(km)
+const GRID = 5.0; // 격자 간격(km)
+const SLAT1 = 30.0; // 투영 위도1(degree)
+const SLAT2 = 60.0; // 투영 위도2(degree)
+const OLON = 126.0; // 기준점 경도(degree)
+const OLAT = 38.0; // 기준점 위도(degree)
+const XO = 43; // 기준점 X좌표(GRID)
+const YO = 136; // 기1준점 Y좌표(GRID)
+// LCC DFS 좌표변환 ( code : "toXY"(위경도->좌표, x:위도, y:경도), "toLL"(좌표->위경도,x:x, y:y) )
+
+
  function changeCode(code, x, y) {
     const DEGRAD = Math.PI / 180.0;
     const RADDEG = 180.0 / Math.PI;
