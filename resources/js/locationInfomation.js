@@ -59,7 +59,7 @@ function saveCoords(position){
 					addressName3 : data.sigungu,
 					addressName4 : data.bname
 				};
-				console.log(data);
+				// console.log(data);
 				resolve(addressObj);
 			}
 		}).open();
